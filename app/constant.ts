@@ -8,10 +8,8 @@ export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
 export enum ACCESS_CODE_CHECK {
-  BASE_URL = "https://yuandifly.com/wx/wxAuth",
-  APPID_CODE = "wxab37bbbf257a9041",
-  LEFT_CHANCE = BASE_URL + "/leftChance?appid=" + APPID_CODE + "&openId=",
-  REDUCE_CHANCE = BASE_URL + "/reduceChance?appid=" + APPID_CODE + "&openId=",
+  LEFT_CHANCE = "https://yuandifly.com/wx/wxAuth/leftChance?appid=wxab37bbbf257a9041&openId=",
+  REDUCE_CHANCE = "https://yuandifly.com/wx/wxAuth/reduceChance?appid=wxab37bbbf257a9041&openId="
 }
 
 export enum Path {
