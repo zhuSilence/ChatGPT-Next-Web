@@ -6,9 +6,9 @@ const en: LocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized:
-      "There are two possible scenarios for the appearance of this message:\n" +
-        "1. If you have not followed the public account below to obtain your initial quota, please follow the public account below to obtain the initial quota, and then click the [Settings] button in the lower left corner to enter the access password.\n" +
-        "2. If your initial quota has been used up, please reply \"purchase quota\" to the public account below. After purchasing, add WeChat zx1347023180 and send payment information to recharge your quota." +
+      "There are two possible scenarios for the appearance of this message:\n\n" +
+        "1. If you have not followed the public account below to obtain your initial quota, please follow the public account below to obtain the initial quota, and then click the [Settings] button in the lower left corner to enter the access password.\n\n" +
+        "2. If your initial quota has been used up, please reply \"购买额度\" to the public account below. After purchasing, add WeChat zx1347023180 and send payment information to recharge your quota.\n\n" +
       QR_CODE +
       WX_XIN,
   },
