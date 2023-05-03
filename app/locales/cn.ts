@@ -1,10 +1,13 @@
 import { SubmitKey } from "../store/config";
+import { QR_CODE, WX_XIN } from "../store/config";
 
 const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-      "现在是未授权状态，请点击左下角[设置](/#/settings)按钮输入访问密码。",
+      "出现此条信息有如下两个可能：\n\n1. 未关注下方公众号获取初始额度，请关注下方公众号获取初始额度，然后点击左下角[设置](/#/settings)按钮输入访问密码；\n\n 2. 初始额度已经用完，请在下方公众号中回复：购买额度，购买后添加微信 zx1347023180 发送支付信息进行额度充值。\n\n " +
+      QR_CODE +
+      WX_XIN,
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,

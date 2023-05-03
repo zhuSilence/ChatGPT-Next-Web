@@ -7,6 +7,13 @@ export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/c
 export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 
+export enum ACCESS_CODE_CHECK {
+  BASE_URL = "https://yuandifly.com/wx/wxAuth",
+  APPID_CODE = "wxab37bbbf257a9041",
+  LEFT_CHANCE = BASE_URL + "/leftChance?appid=" + APPID_CODE + "&openId=",
+  REDUCE_CHANCE = BASE_URL + "/reduceChance?appid=" + APPID_CODE + "&openId=",
+}
+
 export enum Path {
   Home = "/",
   Chat = "/chat",

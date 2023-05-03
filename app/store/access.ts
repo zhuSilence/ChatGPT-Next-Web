@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { StoreKey } from "../constant";
+import { StoreKey, ACCESS_CODE_CHECK } from "../constant";
+import { useEffect } from "react";
 
 export interface AccessControlStore {
   accessCode: string;
@@ -10,12 +11,15 @@ export interface AccessControlStore {
 
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
+  reduce: () => void;
   enabledAccessControl: () => boolean;
+  leftChance: () => Promise<boolean>;
   isAuthorized: () => boolean;
   fetch: () => void;
 }
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
+let flag = false;
 
 export const useAccessStore = create<AccessControlStore>()(
   persist(
@@ -23,10 +27,32 @@ export const useAccessStore = create<AccessControlStore>()(
       token: "",
       accessCode: "",
       needCode: true,
+      reduce() {
+        fetch(ACCESS_CODE_CHECK.REDUCE_CHANCE + this.accessCode, {
+          method: "post",
+          headers: {},
+          body: null,
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            flag = res.data > 0;
+          });
+      },
+      async leftChance() {
+        const response = await fetch(
+          ACCESS_CODE_CHECK.LEFT_CHANCE + this.accessCode,
+          {
+            method: "post",
+            headers: {},
+            body: null,
+          },
+        );
+        const data = await response.json();
+        flag = data.data > 0;
+        return flag;
+      },
       enabledAccessControl() {
-        get().fetch();
-
-        return get().needCode;
+        return true;
       },
       updateCode(code: string) {
         set((state) => ({ accessCode: code }));
@@ -36,9 +62,11 @@ export const useAccessStore = create<AccessControlStore>()(
       },
       isAuthorized() {
         // has token or has code or disabled access control
-        return (
-          !!get().token || !!get().accessCode || !get().enabledAccessControl()
-        );
+        console.log(flag);
+        // return (
+        //   get().leftChance()
+        // );
+        return flag || !!get().accessCode;
       },
       fetch() {
         if (fetchState > 0) return;

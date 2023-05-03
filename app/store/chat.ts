@@ -14,6 +14,7 @@ import { showToast } from "../components/ui-lib";
 import { DEFAULT_CONFIG, ModelConfig, ModelType, useAppConfig } from "./config";
 import { createEmptyMask, Mask } from "./mask";
 import { StoreKey } from "../constant";
+import { AccessControlStore } from "./access";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -90,7 +91,10 @@ interface ChatStore {
   deleteSession: (index?: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: Message) => void;
-  onUserInput: (content: string) => Promise<void>;
+  onUserInput: (
+    content: string,
+    accessStore: AccessControlStore,
+  ) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: Message) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -246,7 +250,7 @@ export const useChatStore = create<ChatStore>()(
         get().summarizeSession();
       },
 
-      async onUserInput(content) {
+      async onUserInput(content, accessStore) {
         const userMessage: Message = createMessage({
           role: "user",
           content,
@@ -273,45 +277,60 @@ export const useChatStore = create<ChatStore>()(
 
         // make request
         console.log("[User Input] ", sendMessages);
-        requestChatStream(sendMessages, {
-          onMessage(content, done) {
-            // stream response
-            if (done) {
+        const leftResult = await accessStore.leftChance();
+        console.log("leftResult:" + leftResult);
+        if (leftResult) {
+          requestChatStream(sendMessages, {
+            onMessage(content, done) {
+              // stream response
+              if (done) {
+                accessStore.reduce();
+                botMessage.streaming = false;
+                botMessage.content = content;
+                get().onNewMessage(botMessage);
+                ControllerPool.remove(
+                  sessionIndex,
+                  botMessage.id ?? messageIndex,
+                );
+              } else {
+                botMessage.content = content;
+                set(() => ({}));
+              }
+            },
+            onError(error, statusCode) {
+              if (statusCode === 401) {
+                botMessage.content = Locale.Error.Unauthorized;
+              } else if (!error.message.includes("aborted")) {
+                botMessage.content += "\n\n" + Locale.Store.Error;
+              }
               botMessage.streaming = false;
-              botMessage.content = content;
-              get().onNewMessage(botMessage);
+              userMessage.isError = true;
+              botMessage.isError = true;
+              set(() => ({}));
               ControllerPool.remove(
                 sessionIndex,
                 botMessage.id ?? messageIndex,
               );
-            } else {
-              botMessage.content = content;
-              set(() => ({}));
-            }
-          },
-          onError(error, statusCode) {
-            if (statusCode === 401) {
-              botMessage.content = Locale.Error.Unauthorized;
-            } else if (!error.message.includes("aborted")) {
-              botMessage.content += "\n\n" + Locale.Store.Error;
-            }
-            botMessage.streaming = false;
-            userMessage.isError = true;
-            botMessage.isError = true;
-            set(() => ({}));
-            ControllerPool.remove(sessionIndex, botMessage.id ?? messageIndex);
-          },
-          onController(controller) {
-            // collect controller for stop/retry
-            ControllerPool.addController(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-              controller,
-            );
-          },
-          filterBot: !useAppConfig.getState().sendBotMessages,
-          modelConfig: useAppConfig.getState().modelConfig,
-        });
+            },
+            onController(controller) {
+              // collect controller for stop/retry
+              ControllerPool.addController(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+                controller,
+              );
+            },
+            filterBot: !useAppConfig.getState().sendBotMessages,
+            modelConfig: useAppConfig.getState().modelConfig,
+          });
+        } else {
+          botMessage.content = Locale.Error.Unauthorized;
+          botMessage.streaming = false;
+          userMessage.isError = true;
+          botMessage.isError = true;
+          set(() => ({}));
+          ControllerPool.remove(sessionIndex, botMessage.id ?? messageIndex);
+        }
       },
 
       getMemoryPrompt() {

@@ -432,12 +432,14 @@ export function Chat() {
       }
     }
   };
-
+  const accessStore = useAccessStore();
   // submit user input
   const onUserSubmit = () => {
     if (userInput.length <= 0) return;
     setIsLoading(true);
-    chatStore.onUserInput(userInput).then(() => setIsLoading(false));
+    chatStore
+      .onUserInput(userInput, accessStore)
+      .then(() => setIsLoading(false));
     setBeforeInput(userInput);
     setUserInput("");
     setPromptHints([]);
@@ -511,13 +513,11 @@ export function Chat() {
     setIsLoading(true);
     const content = session.messages[userIndex].content;
     deleteMessage(userIndex);
-    chatStore.onUserInput(content).then(() => setIsLoading(false));
+    chatStore.onUserInput(content, accessStore).then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
   const context: RenderMessage[] = session.mask.context.slice();
-
-  const accessStore = useAccessStore();
 
   if (
     context.length === 0 &&

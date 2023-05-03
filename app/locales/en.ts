@@ -1,11 +1,13 @@
 import { SubmitKey } from "../store/config";
+import { QR_CODE } from "../store/config";
 import type { LocaleType } from "./index";
 
 const en: LocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized:
-      "Unauthorized access, please enter access code in settings page.",
+      "Unauthorized access, please subscribe this Channel and enter access code in settings page. \n\n " +
+      QR_CODE,
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
