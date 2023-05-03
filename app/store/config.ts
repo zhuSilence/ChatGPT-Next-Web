@@ -100,9 +100,9 @@ export function limitModel(name: string) {
 }
 
 export const QR_CODE =
-  "![](https://yuandifly.com/wp-content/uploads/2023/04/shalousasa.jpg)";
+  "![](../../public/shalousasa.jpg)";
 export const WX_XIN =
-  "![](https://yuandifly.com/wp-content/uploads/2022/11/silence_wx.jpg)";
+  "![](../../public/310.jpg)";
 
 export const ModalConfigValidator = {
   model(x: string) {
