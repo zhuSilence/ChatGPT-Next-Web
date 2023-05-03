@@ -25,7 +25,7 @@ export const useAccessStore = create<AccessControlStore>()(
   persist(
     (set, get) => ({
       token: "",
-      accessCode: "",
+      accessCode: "default",
       needCode: true,
       reduce() {
         fetch(ACCESS_CODE_CHECK.REDUCE_CHANCE + this.accessCode, {
@@ -55,6 +55,7 @@ export const useAccessStore = create<AccessControlStore>()(
         return true;
       },
       updateCode(code: string) {
+        console.log(code);
         set((state) => ({ accessCode: code }));
       },
       updateToken(token: string) {
