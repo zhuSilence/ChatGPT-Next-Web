@@ -10,8 +10,8 @@ import DE from "./de";
 export type { LocaleType } from "./cn";
 
 export const AllLangs = [
-  "en",
   "cn",
+  "en",
   "tw",
   "es",
   "it",
