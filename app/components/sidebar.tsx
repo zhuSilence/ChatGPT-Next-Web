@@ -10,6 +10,7 @@ import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
 import PluginIcon from "../icons/plugin.svg";
+import EyeIcon from "../icons/eye.svg";
 
 import Locale from "../locales";
 
@@ -151,7 +152,9 @@ export function SideBar(props: { className?: string }) {
             </Link>
           </div>
           <div className={styles["sidebar-action"]}>
-            <p>{chatStore.getLeftCount()}</p>
+            <IconButton
+                icon={<EyeIcon />}
+                text={chatStore.getLeftCount()}/>
           </div>
         </div>
         <div>
