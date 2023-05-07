@@ -33,8 +33,6 @@ const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
 });
 
-const accessStore = useAccessStore();
-
 function useDragSideBar() {
   const limit = (x: number) => Math.min(MAX_SIDEBAR_WIDTH, x);
 
@@ -91,6 +89,7 @@ export function SideBar(props: { className?: string }) {
   const navigate = useNavigate();
 
   const config = useAppConfig();
+  const accessStore = useAccessStore();
 
   return (
     <div
