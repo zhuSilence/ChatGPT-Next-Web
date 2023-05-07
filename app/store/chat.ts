@@ -14,7 +14,7 @@ import { showToast } from "../components/ui-lib";
 import { DEFAULT_CONFIG, ModelConfig, ModelType, useAppConfig } from "./config";
 import { createEmptyMask, Mask } from "./mask";
 import { StoreKey } from "../constant";
-import { AccessControlStore } from "./access";
+import {AccessControlStore, useAccessStore} from "./access";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -82,6 +82,7 @@ function createEmptySession(): ChatSession {
 interface ChatStore {
   sessions: ChatSession[];
   currentSessionIndex: number;
+  leftCount: number;
   globalId: number;
   clearSessions: () => void;
   moveSession: (from: number, to: number) => void;
@@ -119,6 +120,7 @@ export const useChatStore = create<ChatStore>()(
       sessions: [createEmptySession()],
       currentSessionIndex: 0,
       globalId: 0,
+      leftCount: 0,
 
       clearSessions() {
         set(() => ({
@@ -131,6 +133,10 @@ export const useChatStore = create<ChatStore>()(
         set({
           currentSessionIndex: index,
         });
+      },
+
+      getLeftCount() {
+        return useAccessStore().leftCount;
       },
 
       moveSession(from: number, to: number) {

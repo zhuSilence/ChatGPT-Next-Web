@@ -150,6 +150,9 @@ export function SideBar(props: { className?: string }) {
               <IconButton icon={<SettingsIcon />} shadow />
             </Link>
           </div>
+          <div className={styles["sidebar-action"]}>
+            <p>{chatStore.getLeftCount()}</p>
+          </div>
         </div>
         <div>
           <IconButton
