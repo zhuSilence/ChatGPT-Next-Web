@@ -82,12 +82,11 @@ function createEmptySession(): ChatSession {
 interface ChatStore {
   sessions: ChatSession[];
   currentSessionIndex: number;
-  leftCount: number;
   globalId: number;
   clearSessions: () => void;
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
-  getLeftCount: () => string;
+  getLeftCount: () => number;
   newSession: (mask?: Mask) => void;
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
@@ -121,7 +120,6 @@ export const useChatStore = create<ChatStore>()(
       sessions: [createEmptySession()],
       currentSessionIndex: 0,
       globalId: 0,
-      leftCount: 0,
 
       clearSessions() {
         set(() => ({
