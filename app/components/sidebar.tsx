@@ -154,7 +154,7 @@ export function SideBar(props: { className?: string }) {
           <div className={styles["sidebar-action"]}>
             <IconButton
                 icon={<Lightning />}
-                text={useAccessStore.leftCount}/>
+                text={useAccessStore.getStats().leftCount}/>
           </div>
         </div>
         <div>
