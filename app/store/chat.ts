@@ -86,7 +86,7 @@ interface ChatStore {
   clearSessions: () => void;
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
-  getLeftCount: () => number;
+  getLeftCount: () => string;
   newSession: (mask?: Mask) => void;
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
@@ -135,7 +135,7 @@ export const useChatStore = create<ChatStore>()(
       },
 
       getLeftCount() {
-        return useAccessStore().leftCount;
+        return "" + useAccessStore().leftCount;
       },
 
       moveSession(from: number, to: number) {
