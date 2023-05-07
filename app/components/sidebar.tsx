@@ -33,6 +33,8 @@ const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
 });
 
+const accessStore = useAccessStore();
+
 function useDragSideBar() {
   const limit = (x: number) => Math.min(MAX_SIDEBAR_WIDTH, x);
 
@@ -154,7 +156,7 @@ export function SideBar(props: { className?: string }) {
           <div className={styles["sidebar-action"]}>
             <IconButton
                 icon={<Lightning />}
-                text={useAccessStore.getStats().leftCount}/>
+                text={accessStore.leftCount}/>
           </div>
         </div>
         <div>
