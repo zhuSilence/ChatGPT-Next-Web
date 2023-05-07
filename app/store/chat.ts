@@ -87,6 +87,7 @@ interface ChatStore {
   clearSessions: () => void;
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
+  getLeftCount: () => string;
   newSession: (mask?: Mask) => void;
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
