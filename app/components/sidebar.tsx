@@ -14,7 +14,7 @@ import Lightning from "../icons/lightning.svg";
 
 import Locale from "../locales";
 
-import { useAppConfig, useChatStore } from "../store";
+import { useAppConfig, useChatStore, useAccessStore } from "../store";
 
 import {
   MAX_SIDEBAR_WIDTH,
@@ -154,7 +154,7 @@ export function SideBar(props: { className?: string }) {
           <div className={styles["sidebar-action"]}>
             <IconButton
                 icon={<Lightning />}
-                text={chatStore.getLeftCount()}/>
+                text={useAccessStore.leftCount}/>
           </div>
         </div>
         <div>
