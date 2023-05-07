@@ -96,7 +96,7 @@ export function SideBar(props: { className?: string }) {
       }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}><a href={HOME_URL} target="_blank" style="{{text-decoration:none;}}">猿地崛起 YDFLY</a></div>
+        <div className={styles["sidebar-title"]}><a href={HOME_URL} target="_blank">猿地崛起 YDFLY</a></div>
         <div className={styles["sidebar-sub-title"]}>
           Build your own AI assistant.
         </div>
