@@ -32,7 +32,7 @@ export const useAccessStore = create<AccessControlStore>()(
       needCode: true,
       hideUserApiKey: false,
       openaiUrl: "/api/openai/",
-      leftCount: 0,
+      leftCount: -1,
 
       reduce() {
         fetch(ACCESS_CODE_CHECK.REDUCE_CHANCE + this.accessCode, {
