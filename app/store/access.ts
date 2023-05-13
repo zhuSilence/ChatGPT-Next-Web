@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { StoreKey, ACCESS_CODE_CHECK } from "../constant";
 import { getHeaders } from "../requests";
+import { ALL_MODELS } from "./config";
 
 export interface AccessControlStore {
   accessCode: string;
@@ -92,6 +93,15 @@ export const useAccessStore = create<AccessControlStore>()(
           .then((res: DangerConfig) => {
             console.log("[Config] got config from server", res);
             set(() => ({ ...res }));
+
+            if (!res.enableGPT4) {
+              ALL_MODELS.forEach((model) => {
+                if (model.name.startsWith("gpt-4")) {
+                  (model as any).available = false;
+                }
+              });
+            }
+
           })
           .catch(() => {
             console.error("[Config] failed to fetch config");

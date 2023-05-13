@@ -51,7 +51,6 @@ const makeRequestParam = (
 };
 
 export function getHeaders() {
-  console.log("request" + useAccessStore);
   const accessStore = useAccessStore.getState();
   let headers: Record<string, string> = {};
 
