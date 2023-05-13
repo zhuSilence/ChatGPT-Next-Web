@@ -21,6 +21,11 @@ export const CN_MASKS: BuiltinMask[] = [{
         date:"",
        },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig:{
       model:"gpt-3.5-turbo",
       temperature:1,
