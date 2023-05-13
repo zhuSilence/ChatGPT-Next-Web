@@ -564,9 +564,9 @@ export function Settings() {
         <List>
           <ImageModelConfigList
               imageModelConfig={config.imageModelConfig}
-              updateConfig={(upater) => {
+              updateConfig={(updater) => {
                 const imageModelConfig = { ...config.imageModelConfig };
-                upater(imageModelConfig);
+                updater(imageModelConfig);
                 config.update(
                     (config) => (config.imageModelConfig = imageModelConfig),
                 );
