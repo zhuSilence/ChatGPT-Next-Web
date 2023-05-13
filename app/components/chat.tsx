@@ -558,7 +558,7 @@ export function Chat() {
   const context: RenderMessage[] = session.mask.context.slice();
 
   if (
-    context.length === 0 &&
+      context.length === 0 && session.botHello !== undefined &&
     session.messages.at(0)?.content !== session.botHello.content
   ) {
     const copiedHello = Object.assign({}, session.botHello);
