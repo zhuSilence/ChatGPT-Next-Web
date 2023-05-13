@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { StoreKey, ACCESS_CODE_CHECK } from "../constant";
-import { BOT_HELLO } from "./chat";
+import { StoreKey, ACCESS_CODE_CHECK } from "../constant";om "./chat";
 
 export interface AccessControlStore {
   accessCode: string;
@@ -89,10 +88,6 @@ export const useAccessStore = create<AccessControlStore>()(
           .then((res: DangerConfig) => {
             console.log("[Config] got config from server", res);
             set(() => ({ ...res }));
-
-            if ((res as any).botHello) {
-              BOT_HELLO.content = (res as any).botHello;
-            }
           })
           .catch(() => {
             console.error("[Config] failed to fetch config");

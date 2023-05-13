@@ -1,9 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import { type ChatCompletionResponseMessage } from "openai";
+import { ImagesResponseDataInner, type ChatCompletionResponseMessage } from "openai";
 import {
   ControllerPool,
+  requestImage,
   requestChatStream,
   requestWithPrompt,
 } from "../requests";
@@ -18,6 +19,8 @@ import {AccessControlStore, useAccessStore} from "./access";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
+  images?: ImagesResponseDataInner[];
+  image_alt?: string;
   streaming?: boolean;
   isError?: boolean;
   id?: number;
@@ -52,17 +55,21 @@ export interface ChatSession {
   stat: ChatStat;
   lastUpdate: number;
   lastSummarizeIndex: number;
-
+  botHello: Message;
   mask: Mask;
 }
 
 export const DEFAULT_TOPIC = Locale.Store.DefaultTopic;
-export const BOT_HELLO: Message = createMessage({
+const BOT_HELLO: Message = createMessage({
   role: "assistant",
   content: Locale.Store.BotHello,
 });
-
+const createBotHelloWithCommand = (command: string): Message => {
+  BOT_HELLO.content = Locale.Store.BotHelloWithCommand(command);
+  return BOT_HELLO;
+};
 function createEmptySession(): ChatSession {
+  const mask = createEmptyMask();
   return {
     id: Date.now() + Math.random(),
     topic: DEFAULT_TOPIC,
@@ -75,7 +82,8 @@ function createEmptySession(): ChatSession {
     },
     lastUpdate: Date.now(),
     lastSummarizeIndex: 0,
-    mask: createEmptyMask(),
+    mask: mask,
+    botHello: createBotHelloWithCommand(mask.imageModelConfig.command),
   };
 }
 
@@ -242,7 +250,7 @@ export const useChatStore = create<ChatStore>()(
       async onUserInput(content, accessStore) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
-
+        const imageModelConfig = session.mask.imageModelConfig;
         const userMessage: Message = createMessage({
           role: "user",
           content,
@@ -271,47 +279,99 @@ export const useChatStore = create<ChatStore>()(
         console.log("[User Input] ", sendMessages);
         const leftResult = await accessStore.leftChance();
         if (leftResult) {
-          requestChatStream(sendMessages, {
-            onMessage(content, done) {
-              // stream response
-              if (done) {
-                accessStore.reduce();
+          //判断出否是请求图片
+          if (userMessage.content.trim().toLowerCase().startsWith(imageModelConfig.command.toLowerCase())) {
+            const keyword = userMessage.content.substring(
+                imageModelConfig.command.toLowerCase().length,
+            );
+            console.log("keyword", keyword);
+            requestImage(keyword, {
+              onMessage(content, images, image_alt, done) {
+                // stream response
+                if (done) {
+                  botMessage.streaming = false;
+                  botMessage.content = content!;
+                  botMessage.images = images!;
+                  botMessage.image_alt = image_alt!;
+                  get().onNewMessage(botMessage);
+                  ControllerPool.remove(
+                      sessionIndex,
+                      botMessage.id ?? messageIndex,
+                  );
+                } else {
+                  botMessage.image_alt = image_alt!;
+                  set(() => ({}));
+                }
+              },
+              onError(error, statusCode) {
+                const isAborted = error.message.includes("aborted");
+                if (statusCode === 401) {
+                  botMessage.content = Locale.Error.Unauthorized;
+                } else if (!isAborted) {
+                  botMessage.content += "\n\n" + Locale.Store.Error;
+                }
                 botMessage.streaming = false;
-                botMessage.content = content;
-                get().onNewMessage(botMessage);
+                userMessage.isError = !isAborted;
+                botMessage.isError = !isAborted;
+
+                set(() => ({}));
                 ControllerPool.remove(
                     sessionIndex,
                     botMessage.id ?? messageIndex,
                 );
-              } else {
-                botMessage.content = content;
-                set(() => ({}));
-              }
-            },
-            onError(error, statusCode) {
-              const isAborted = error.message.includes("aborted");
-              if (statusCode === 401) {
-                botMessage.content = Locale.Error.Unauthorized;
-              } else if (!isAborted) {
-                botMessage.content += "\n\n" + Locale.Store.Error;
-              }
-              botMessage.streaming = false;
-              userMessage.isError = !isAborted;
-              botMessage.isError = !isAborted;
+              },
+              onController(controller) {
+                // collect controller for stop/retry
+                ControllerPool.addController(
+                    sessionIndex,
+                    botMessage.id ?? messageIndex,
+                    controller,
+                );
+              },
+            });
+          } else {
+            requestChatStream(sendMessages, {
+              onMessage(content, done) {
+                // stream response
+                if (done) {
+                  accessStore.reduce();
+                  botMessage.streaming = false;
+                  botMessage.content = content;
+                  get().onNewMessage(botMessage);
+                  ControllerPool.remove(
+                      sessionIndex,
+                      botMessage.id ?? messageIndex,
+                  );
+                } else {
+                  botMessage.content = content;
+                  set(() => ({}));
+                }
+              },
+              onError(error, statusCode) {
+                const isAborted = error.message.includes("aborted");
+                if (statusCode === 401) {
+                  botMessage.content = Locale.Error.Unauthorized;
+                } else if (!isAborted) {
+                  botMessage.content += "\n\n" + Locale.Store.Error;
+                }
+                botMessage.streaming = false;
+                userMessage.isError = !isAborted;
+                botMessage.isError = !isAborted;
 
-              set(() => ({}));
-              ControllerPool.remove(sessionIndex, botMessage.id ?? messageIndex);
-            },
-            onController(controller) {
-              // collect controller for stop/retry
-              ControllerPool.addController(
-                  sessionIndex,
-                  botMessage.id ?? messageIndex,
-                  controller,
-              );
-            },
-            modelConfig: {...modelConfig},
-          });
+                set(() => ({}));
+                ControllerPool.remove(sessionIndex, botMessage.id ?? messageIndex);
+              },
+              onController(controller) {
+                // collect controller for stop/retry
+                ControllerPool.addController(
+                    sessionIndex,
+                    botMessage.id ?? messageIndex,
+                    controller,
+                );
+              },
+              modelConfig: {...modelConfig},
+            });
+          }
         }  else {
           botMessage.content = Locale.Error.Unauthorized;
           botMessage.streaming = false;

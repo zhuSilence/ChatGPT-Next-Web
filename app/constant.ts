@@ -7,6 +7,9 @@ export const FETCH_COMMIT_URL = `https://api.github.com/repos/${OWNER}/${REPO}/c
 export const FETCH_TAG_URL = `https://api.github.com/repos/${OWNER}/${REPO}/tags?per_page=1`;
 export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 export const HOME_URL = "https://yuandifly.com";
+export const IMAGE_PLACEHOLDER = "Loading your image...";
+export const IMAGE_ERROR = "IMAGE_ERROR";
+export const COMMAND_IMAGE = "/image";
 
 export enum ACCESS_CODE_CHECK {
   LEFT_CHANCE = "https://yuandifly.com/wx/wxAuth/leftChance?appid=wxab37bbbf257a9041&openId=",

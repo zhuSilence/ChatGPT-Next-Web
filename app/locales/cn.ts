@@ -1,5 +1,4 @@
-import { SubmitKey } from "../store/config";
-import { QR_CODE, WX_XIN } from "../store/config";
+import { QR_CODE, WX_XIN, SubmitKey } from "../store/config";
 
 const cn = {
   WIP: "该功能仍在开发中……",
@@ -156,6 +155,13 @@ const cn = {
       Placeholder: "请输入访问密码",
     },
     Model: "模型 (model)",
+    ImageModel: {
+      Title: "图片模型",
+      Model: "DALL-E模型",
+      Command: "生成图片指令",
+      CountLimit: "图片生成次数限制",
+      Size: "图片生成尺寸",
+    },
     Temperature: {
       Title: "随机性 (temperature)",
       SubTitle: "值越大，回复越随机",
@@ -172,6 +178,10 @@ const cn = {
   Store: {
     DefaultTopic: "新的聊天",
     BotHello: "有什么可以帮你的吗",
+    BotHelloWithCommand: (command: string) =>
+        "您好！今天我能为您做些什么呢？\n 要生成图片，请使用 `" +
+        command +
+        " {关键词}。`",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) =>
