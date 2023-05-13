@@ -210,7 +210,7 @@ export async function requestImage(
         clearTimeout(reqTimeoutId);
 
         const finish = (images: ImagesResponseDataInner[]) => {
-          options?.onMessage("Here is your images", images, null, true);
+          options?.onMessage("", images, null, true);
           controller.abort();
         };
 
