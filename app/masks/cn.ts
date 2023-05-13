@@ -12,6 +12,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -35,6 +40,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -58,6 +68,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -81,6 +96,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -104,6 +124,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -127,6 +152,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -150,6 +180,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -173,6 +208,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -202,6 +242,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -231,6 +276,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -281,6 +331,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -309,6 +364,11 @@ export const CN_MASKS: BuiltinMask[] = [
       content: "张三，出生于1990年5月5日。月老已经向我吐露了他们的秘密。在爱的领域里，要做好准备迎接意想不到的事情。与一位老熟人的相遇可能会重新点燃往日的火花。保持心灵敞开和眼睛警觉，因为真爱可能比你想象的更近。 {{providePrediction}}",
       date: ""
     }],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -332,6 +392,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 1,
@@ -355,6 +420,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-3.5-turbo",
       temperature: 0,
@@ -388,6 +458,11 @@ export const CN_MASKS: BuiltinMask[] = [
         date:"",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig:{
       model:"gpt-3.5-turbo",
       temperature:1,
