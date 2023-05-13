@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { StoreKey, ACCESS_CODE_CHECK } from "../constant";om "./chat";
+import { StoreKey, ACCESS_CODE_CHECK } from "../constant";
+import { getHeaders } from "../requests";
 
 export interface AccessControlStore {
   accessCode: string;
@@ -83,6 +84,9 @@ export const useAccessStore = create<AccessControlStore>()(
         fetch("/api/config", {
           method: "post",
           body: null,
+          headers: {
+            ...getHeaders(),
+          },
         })
           .then((res) => res.json())
           .then((res: DangerConfig) => {
