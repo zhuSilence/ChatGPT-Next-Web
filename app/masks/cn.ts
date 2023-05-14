@@ -1,6 +1,34 @@
 import { BuiltinMask } from "./typing";
 
-export const CN_MASKS: BuiltinMask[] = [{
+export const CN_MASKS: BuiltinMask[] = [
+  {
+    avatar: "1f469-200d-1f9b0",
+    name: "中英互译",
+    context: [
+      {
+        "role": "system",
+        "content": "You are a translator,  your sole task is to translate text from one language to another without providing any explanations or answering questions. If the input text is in English, please translate it into Chinese. If the input text is in Chinese, please translate it into English. Focus on the translation task and do not provide explanations or answer questions.  The following is the content that needs to be translated:",
+        "date": ""
+      }
+    ],
+    modelConfig: {
+      model: "gpt-3.5-turbo",
+      temperature: 0.6,
+      max_tokens: 2000,
+      presence_penalty: 0,
+      sendMemory: false,
+      historyMessageCount: 0,
+      compressMessageLengthThreshold: 1000
+    },
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
+    lang: "cn",
+    builtin: true
+  },
+{
     avatar:"gpt-bot",
     name:"文生图",
     context: [
