@@ -161,6 +161,7 @@ const makeImageRequestParam = (
     n: useAppConfig.getState().imageModelConfig.noOfImage,
     response_format: CreateImageRequestResponseFormatEnum.Url,
     user: "default_user",
+    size: useAppConfig.getState().imageModelConfig.size
   };
 
   // Override default values with provided options

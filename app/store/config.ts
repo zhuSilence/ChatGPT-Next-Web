@@ -41,7 +41,7 @@ export const DEFAULT_CONFIG = {
     compressMessageLengthThreshold: 1000,
   },
   imageModelConfig: {
-    noOfImage: 1,
+    noOfImage: 4,
     command: COMMAND_IMAGE,
     size: "256x256" as ImageRequestSizeEnum,
   },
