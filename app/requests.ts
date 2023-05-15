@@ -211,7 +211,13 @@ export async function requestImage(
         clearTimeout(reqTimeoutId);
 
         const finish = (images: ImagesResponseDataInner[]) => {
-          let contentString = "![](" + images[0].url + ")";
+          let contentString = "";
+          images.forEach((img) => {
+            if (img.url) {
+              contentString += "![](" + img.url + ") ";
+              console.log(img.url)
+            }
+          });
           options?.onMessage(contentString, null, null, true);
           controller.abort();
         };
