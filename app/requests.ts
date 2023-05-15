@@ -215,7 +215,6 @@ export async function requestImage(
           images.forEach((img) => {
             if (img.url) {
               contentString += "![](" + img.url + ") ";
-              console.log(img.url)
             }
           });
           options?.onMessage(contentString, null, null, true);

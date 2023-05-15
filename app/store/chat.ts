@@ -301,6 +301,7 @@ export const useChatStore = create<ChatStore>()(
               onMessage(content, images, image_alt, done) {
                 // stream response
                 if (done) {
+                  accessStore.reduce();
                   botMessage.streaming = false;
                   botMessage.content = content!;
                   botMessage.images = images!;
