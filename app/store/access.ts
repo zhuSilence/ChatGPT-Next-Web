@@ -18,6 +18,7 @@ export interface AccessControlStore {
   enabledAccessControl: () => boolean;
   leftChance: () => Promise<boolean>;
   leftCount: number,
+  leftImgCount: number,
   isAuthorized: () => boolean;
   fetch: () => void;
 }
@@ -34,6 +35,7 @@ export const useAccessStore = create<AccessControlStore>()(
       hideUserApiKey: false,
       openaiUrl: "/api/openai/",
       leftCount: -1,
+      leftImgCount: 0,
 
       reduce() {
         fetch(ACCESS_CODE_CHECK.REDUCE_CHANCE + this.accessCode, {
@@ -55,9 +57,10 @@ export const useAccessStore = create<AccessControlStore>()(
             body: null,
           },
         );
-        const data = await response.json();
-        flag = data.data > 0;
-        this.leftCount = Math.max(data.data - 1, 0);
+        const result = await response.json();
+        flag = result.data.openApiCount > 0;
+        this.leftCount = Math.max(result.data.openApiCount - 1, 0);
+        this.leftImgCount = result.data.imageApiCount;
         return flag;
       },
       enabledAccessControl() {

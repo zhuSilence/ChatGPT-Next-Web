@@ -65,7 +65,7 @@ const BOT_HELLO: Message = createMessage({
   content: Locale.Store.BotHello,
 });
 const createBotHelloWithCommand = (command: string): Message => {
-  BOT_HELLO.content = Locale.Store.BotHelloWithCommand(command);
+  BOT_HELLO.content = Locale.Store.BotHello;
   return BOT_HELLO;
 };
 function createEmptySession(): ChatSession {
