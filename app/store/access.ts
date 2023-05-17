@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { StoreKey, ACCESS_CODE_CHECK } from "../constant";
-import { getHeaders } from "../requests";
+import { getHeaders } from "../client/api";
 import { ALL_MODELS } from "./config";
 
 export interface AccessControlStore {
