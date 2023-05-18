@@ -21,6 +21,11 @@ export const EN_MASKS: BuiltinMask[] = [
       historyMessageCount: 4,
       compressMessageLengthThreshold: 1000,
     },
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     lang: "en",
     builtin: true,
   },

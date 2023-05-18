@@ -158,6 +158,13 @@ const ko: LocaleType = {
       Placeholder: "액세스 코드 입력",
     },
     Model: "모델",
+    ImageModel: {
+      Title: "Image Model",
+      Model: "DALL-E Model",
+      Command: "Generate Image Command",
+      NoOfImage: "Image Generation Limit",
+      Size: "Image Generation Size",
+    },
     Temperature: {
       Title: "온도 (temperature)",
       SubTitle: "값이 클수록 더 무작위한 출력이 생성됩니다.",
@@ -165,7 +172,7 @@ const ko: LocaleType = {
     MaxTokens: {
       Title: "최대 토큰 수 (max_tokens)",
       SubTitle: "입력 토큰과 생성된 토큰의 최대 길이",
-    },  
+    },
     PresencePenalty: {
       Title: "존재 페널티 (presence_penalty)",
       SubTitle:
@@ -175,6 +182,10 @@ const ko: LocaleType = {
   Store: {
     DefaultTopic: "새 대화",
     BotHello: "안녕하세요! 오늘 도움이 필요하신가요?",
+    BotHelloWithCommand: (command: string) =>
+        "Hello! How can I assist you today?\n To generate images, use `" +
+        command +
+        " {keyword}.`",
     Error: "문제가 발생했습니다. 나중에 다시 시도해주세요.",
     Prompt: {
       History: (content: string) =>

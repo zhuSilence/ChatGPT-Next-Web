@@ -65,7 +65,7 @@ export const BOT_HELLO: ChatMessage = createMessage({
   role: "assistant",
   content: Locale.Store.BotHello,
 });
-const createBotHelloWithCommand = (command: string): Message => {
+const createBotHelloWithCommand = (command: string): ChatMessage => {
   BOT_HELLO.content = Locale.Store.BotHello;
   return BOT_HELLO;
 };
