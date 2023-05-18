@@ -20,6 +20,7 @@ export interface AccessControlStore {
   leftCount: number,
   leftImgCount: number,
   isAuthorized: () => boolean;
+  isImgAuthorized: () => boolean;
   fetch: () => void;
 }
 
@@ -75,6 +76,9 @@ export const useAccessStore = create<AccessControlStore>()(
       isAuthorized() {
         get().fetch();
         return flag || !!get().accessCode;
+      },
+      isImgAuthorized() {
+          return this.leftImgCount > 0;
       },
       fetch() {
         if (fetchState > 0) return;

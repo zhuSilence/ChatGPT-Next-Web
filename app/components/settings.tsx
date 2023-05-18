@@ -261,6 +261,7 @@ export function Settings() {
   const [shouldShowPromptModal, setShowPromptModal] = useState(false);
 
   const showUsage = accessStore.isAuthorized();
+  const showImage = accessStore.isImgAuthorized();
   useEffect(() => {
     // checks per minutes
     checkUpdate();
@@ -561,19 +562,20 @@ export function Settings() {
             }}
           />
         </List>
-        <List>
-          <ImageModelConfigList
-              imageModelConfig={config.imageModelConfig}
-              updateConfig={(updater) => {
-                const imageModelConfig = { ...config.imageModelConfig };
-                updater(imageModelConfig);
-                config.update(
-                    (config) => (config.imageModelConfig = imageModelConfig),
-                );
-              }}
-          />
-        </List>
-
+        {showImage? (
+            <List>
+              <ImageModelConfigList
+                  imageModelConfig={config.imageModelConfig}
+                  updateConfig={(updater) => {
+                    const imageModelConfig = { ...config.imageModelConfig };
+                    updater(imageModelConfig);
+                    config.update(
+                        (config) => (config.imageModelConfig = imageModelConfig),
+                    );
+                  }}
+              />
+            </List>
+        ) : ''}
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
         )}
