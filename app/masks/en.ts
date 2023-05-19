@@ -94,6 +94,11 @@ export const EN_MASKS: BuiltinMask[] = [
       historyMessageCount: 4,
       compressMessageLengthThreshold: 1000,
     },
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     lang: "en",
     builtin: true,
   },
@@ -113,6 +118,11 @@ export const EN_MASKS: BuiltinMask[] = [
         date: "",
       },
     ],
+    imageModelConfig: {
+      command: "/image",
+      noOfImage: 1,
+      size: "256x256",
+    },
     modelConfig: {
       model: "gpt-4",
       temperature: 0.5,

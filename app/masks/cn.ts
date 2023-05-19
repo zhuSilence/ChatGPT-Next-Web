@@ -490,7 +490,7 @@ export const CN_MASKS: BuiltinMask[] = [
       compressMessageLengthThreshold: 1000
     },
     lang: "cn",
-    builtin: false
+    builtin: true
   },
   {
     avatar: "1f35a",
