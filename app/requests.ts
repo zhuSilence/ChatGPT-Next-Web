@@ -217,7 +217,7 @@ export async function requestImage(
           //     contentString += "![](" + img.url + ") ";
           //   }
           // });
-          options?.onMessage("", images, null, true);
+          options?.onMessage(" ", images, null, true);
           controller.abort();
         };
 
