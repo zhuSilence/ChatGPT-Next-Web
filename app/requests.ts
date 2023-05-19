@@ -211,13 +211,13 @@ export async function requestImage(
         clearTimeout(reqTimeoutId);
 
         const finish = (images: ImagesResponseDataInner[]) => {
-          let contentString = "";
-          images.forEach((img) => {
-            if (img.url) {
-              contentString += "![](" + img.url + ") ";
-            }
-          });
-          options?.onMessage(contentString, null, null, true);
+          // let contentString = "";
+          // images.forEach((img) => {
+          //   if (img.url) {
+          //     contentString += "![](" + img.url + ") ";
+          //   }
+          // });
+          options?.onMessage("", images, null, true);
           controller.abort();
         };
 

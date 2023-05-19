@@ -528,9 +528,9 @@ export function Chat() {
   };
   const onRightClick = (e: any, message: ChatMessage) => {
     // copy to clipboard
-    if (selectOrCopy(e.currentTarget, message.content)) {
-      e.preventDefault();
-    }
+    // if (selectOrCopy(e.currentTarget, message.content)) {
+    //   e.preventDefault();
+    // }
   };
 
   const findLastUserIndex = (messageId: number) => {
