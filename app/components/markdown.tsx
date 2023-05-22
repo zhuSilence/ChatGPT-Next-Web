@@ -129,7 +129,7 @@ export function Markdown(
     image_alt?: string;
     loading?: boolean;
     fontSize?: number;
-    parentRef: RefObject<HTMLDivElement>;
+    parentRef?: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
@@ -137,7 +137,7 @@ export function Markdown(
   const renderedHeight = useRef(0);
   const inView = useRef(!!props.defaultShow);
 
-  const parent = props.parentRef.current;
+  const parent = props.parentRef?.current;
   const md = mdRef.current;
 
   const checkInView = () => {
