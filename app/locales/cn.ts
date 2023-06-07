@@ -8,6 +8,13 @@ const cn = {
       QR_CODE +
       WX_XIN,
   },
+  Auth: {
+    Title: "需要密码",
+    Tips: "管理员开启了密码验证，请在下方填入访问码",
+    Input: "在此处填写访问码",
+    Confirm: "确认",
+    Later: "稍后再说",
+  },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
@@ -187,9 +194,9 @@ const cn = {
     DefaultTopic: "新的聊天",
     BotHello: "有什么可以帮你的吗",
     BotHelloWithCommand: (command: string) =>
-        "您好！今天我能为您做些什么呢？\n 要生成图片，请使用 `" +
-        command +
-        " {关键词}。`",
+      "您好！今天我能为您做些什么呢？\n 要生成图片，请使用 `" +
+      command +
+      " {关键词}。`",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,

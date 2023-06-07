@@ -1,4 +1,4 @@
-import {SubmitKey, WX_XIN} from "../store/config";
+import { SubmitKey, WX_XIN } from "../store/config";
 import { QR_CODE } from "../store/config";
 import type { RequiredLocaleType } from "./index";
 
@@ -7,10 +7,17 @@ const en: RequiredLocaleType = {
   Error: {
     Unauthorized:
       "There are two possible scenarios for the appearance of this message:\n\n" +
-        "1. If you have not followed the public account below to obtain your initial quota, please follow the public account below to obtain the initial quota, and then click the [Settings] button in the lower left corner to enter the access password.\n\n" +
-        "2. If your initial quota has been used up, please reply \"购买额度\" to the public account below. After purchasing, add WeChat zx1347023180 and send payment information to recharge your quota.\n\n" +
+      "1. If you have not followed the public account below to obtain your initial quota, please follow the public account below to obtain the initial quota, and then click the [Settings] button in the lower left corner to enter the access password.\n\n" +
+      '2. If your initial quota has been used up, please reply "购买额度" to the public account below. After purchasing, add WeChat zx1347023180 and send payment information to recharge your quota.\n\n' +
       QR_CODE +
       WX_XIN,
+  },
+  Auth: {
+    Title: "Need Access Code",
+    Tips: "Please enter access code below",
+    Input: "access code",
+    Confirm: "Confirm",
+    Later: "Later",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
@@ -192,9 +199,9 @@ const en: RequiredLocaleType = {
     DefaultTopic: "New Conversation",
     BotHello: "Hello! How can I assist you today?",
     BotHelloWithCommand: (command: string) =>
-        "Hello! How can I assist you today?\n To generate images, use `" +
-        command +
-        " {keyword}.`",
+      "Hello! How can I assist you today?\n To generate images, use `" +
+      command +
+      " {keyword}.`",
     Error: "Something went wrong, please try again later.",
     Prompt: {
       History: (content: string) =>

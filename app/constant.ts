@@ -13,7 +13,7 @@ export const COMMAND_IMAGE = "/image";
 
 export enum ACCESS_CODE_CHECK {
   LEFT_CHANCE = "https://yuandifly.com/wx/wxAuth/leftChance?appid=wxab37bbbf257a9041&openId=",
-  REDUCE_CHANCE = "https://yuandifly.com/wx/wxAuth/reduceChance?appid=wxab37bbbf257a9041&openId="
+  REDUCE_CHANCE = "https://yuandifly.com/wx/wxAuth/reduceChance?appid=wxab37bbbf257a9041&openId=",
 }
 
 export enum Path {
@@ -22,6 +22,7 @@ export enum Path {
   Settings = "/settings",
   NewChat = "/new-chat",
   Masks = "/masks",
+  Auth = "/auth",
 }
 
 export enum SlotID {
