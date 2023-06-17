@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { getClientConfig } from "../config/client";
-import { StoreKey } from "../constant";
 import { ImageRequestSizeEnum } from "../api/openai/typing";
 import { COMMAND_IMAGE, StoreKey } from "../constant";
 import { CreateImageRequestSizeEnum } from "openai";
