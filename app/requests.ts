@@ -16,6 +16,7 @@ import {
   ImagesResponse,
   ImagesResponseDataInner,
 } from "openai";
+import { OpenaiPath } from "@/app/constant";
 
 const TIME_OUT_MS = 60000;
 
@@ -153,15 +154,15 @@ export async function requestUsage() {
 }
 
 const makeImageRequestParam = (
-    prompt: string,
-    options?: Omit<CreateImageRequest, "prompt">,
+  prompt: string,
+  options?: Omit<CreateImageRequest, "prompt">,
 ): CreateImageRequest => {
   // Set default values
   const defaultOptions: Omit<CreateImageRequest, "prompt"> = {
     n: useAppConfig.getState().imageModelConfig.noOfImage,
     response_format: CreateImageRequestResponseFormatEnum.Url,
     user: "default_user",
-    size: useAppConfig.getState().imageModelConfig.size
+    size: useAppConfig.getState().imageModelConfig.size,
   };
 
   // Override default values with provided options
@@ -175,24 +176,24 @@ const makeImageRequestParam = (
   return request;
 };
 export async function requestImage(
-    keyword: string,
-    options?: {
-      onMessage: (
-          message: string | null,
-          image: ImagesResponseDataInner[] | null,
-          image_alt: string | null,
-          done: boolean,
-      ) => void;
-      onError: (error: Error, statusCode?: number) => void;
-      onController?: (controller: AbortController) => void;
-    },
+  keyword: string,
+  options?: {
+    onMessage: (
+      message: string | null,
+      image: ImagesResponseDataInner[] | null,
+      image_alt: string | null,
+      done: boolean,
+    ) => void;
+    onError: (error: Error, statusCode?: number) => void;
+    onController?: (controller: AbortController) => void;
+  },
 ) {
   if (keyword.length < 1) {
     options?.onMessage(
-        "Please enter a keyword after `/image`",
-        null,
-        null,
-        true,
+      "Please enter a keyword after `/image`",
+      null,
+      null,
+      true,
     );
   } else {
     const controller = new AbortController();
@@ -206,7 +207,7 @@ export async function requestImage(
         const sanitizedMessage = keyword.replace(/[\n\r]+/g, " ");
         const req = makeImageRequestParam(sanitizedMessage);
 
-        const res = await requestOpenaiClient("v1/images/generations")(req);
+        const res = await requestOpenaiClient(OpenaiPath.ImagePath)(req);
 
         clearTimeout(reqTimeoutId);
 
@@ -235,10 +236,10 @@ export async function requestImage(
         console.error("NetWork Error", err);
         options?.onError(err as Error);
         options?.onMessage(
-            "Image generation has been cancelled.",
-            null,
-            IMAGE_ERROR,
-            true,
+          "Image generation has been cancelled.",
+          null,
+          IMAGE_ERROR,
+          true,
         );
       }
     }
