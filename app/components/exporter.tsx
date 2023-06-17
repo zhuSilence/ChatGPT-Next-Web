@@ -23,7 +23,6 @@ import { DEFAULT_MASK_AVATAR } from "../store/mask";
 import { api } from "../client/api";
 import { prettyObject } from "../utils/format";
 import { EXPORT_MESSAGE_CLASS_NAME } from "../constant";
-import { metadata } from "@/app/layout";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -438,9 +437,9 @@ export function ImagePreviewer(props: {
           </div>
 
           <div>
-            <div className={styles["main-title"]}>{metadata.title}</div>
+            <div className={styles["main-title"]}>猿地崛起 YDFLY</div>
             <div className={styles["sub-title"]}>
-              {metadata.description} https://chat.yuandifly.com
+              Your personal ChatGPT Chat Bot. https://chat.yuandifly.com
             </div>
             <div className={styles["icons"]}>
               <ExportAvatar avatar={config.avatar} />
