@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const vi: LocaleType = {
+const vi: PartialLocaleType = {
   WIP: "Sắp ra mắt...",
   Error: {
     Unauthorized:
@@ -166,9 +166,9 @@ const vi: LocaleType = {
     DefaultTopic: "Cuộc trò chuyện mới",
     BotHello: "Xin chào! Mình có thể giúp gì cho bạn?",
     BotHelloWithCommand: (command: string) =>
-        "Xin chào! Mình có thể giúp gì cho bạn?\n Để tạo hình ảnh, hãy sử dụng `" +
-        command +
-        " {từ khóa}.`",
+      "Xin chào! Mình có thể giúp gì cho bạn?\n Để tạo hình ảnh, hãy sử dụng `" +
+      command +
+      " {từ khóa}.`",
     Error: "Có lỗi xảy ra, vui lòng thử lại sau.",
     Prompt: {
       History: (content: string) =>

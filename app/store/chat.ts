@@ -1,7 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import { ImagesResponseDataInner, type ChatCompletionResponseMessage } from "openai";
+import {
+  ImagesResponseDataInner,
+  type ChatCompletionResponseMessage,
+} from "openai";
 import {
   ControllerPool,
   requestImage,
@@ -18,7 +21,8 @@ import { StoreKey } from "../constant";
 import { api, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
-import {AccessControlStore, useAccessStore} from "./access";
+import { estimateTokenLength } from "../utils/token";
+import { AccessControlStore, useAccessStore } from "./access";
 
 export type ChatMessage = RequestMessage & {
   date: string;
@@ -119,7 +123,7 @@ interface ChatStore {
 }
 
 function countMessages(msgs: ChatMessage[]) {
-  return msgs.reduce((pre, cur) => pre + cur.content.length, 0);
+  return msgs.reduce((pre, cur) => pre + estimateTokenLength(cur.content), 0);
 }
 
 export const useChatStore = create<ChatStore>()(
@@ -243,6 +247,7 @@ export const useChatStore = create<ChatStore>()(
 
       onNewMessage(message) {
         get().updateCurrentSession((session) => {
+          session.messages = session.messages.concat();
           session.lastUpdate = Date.now();
         });
         get().updateStat(message);
@@ -289,8 +294,7 @@ export const useChatStore = create<ChatStore>()(
 
         // save user's and bot's message
         get().updateCurrentSession((session) => {
-          session.messages.push(userMessage);
-          session.messages.push(botMessage);
+          session.messages = session.messages.concat([userMessage, botMessage]);
         });
 
         // make request
@@ -298,9 +302,14 @@ export const useChatStore = create<ChatStore>()(
         const leftResult = await accessStore.leftChance();
         if (leftResult) {
           //判断出否是请求图片
-          if (userMessage.content.trim().toLowerCase().startsWith(imageModelConfig.command.toLowerCase())) {
+          if (
+            userMessage.content
+              .trim()
+              .toLowerCase()
+              .startsWith(imageModelConfig.command.toLowerCase())
+          ) {
             const keyword = userMessage.content.substring(
-                imageModelConfig.command.toLowerCase().length,
+              imageModelConfig.command.toLowerCase().length,
             );
             console.log("keyword", keyword);
             requestImage(keyword, {
@@ -314,8 +323,8 @@ export const useChatStore = create<ChatStore>()(
                   botMessage.image_alt = image_alt!;
                   get().onNewMessage(botMessage);
                   ControllerPool.remove(
-                      sessionIndex,
-                      botMessage.id ?? messageIndex,
+                    sessionIndex,
+                    botMessage.id ?? messageIndex,
                   );
                 } else {
                   botMessage.image_alt = image_alt!;
@@ -335,16 +344,16 @@ export const useChatStore = create<ChatStore>()(
 
                 set(() => ({}));
                 ControllerPool.remove(
-                    sessionIndex,
-                    botMessage.id ?? messageIndex,
+                  sessionIndex,
+                  botMessage.id ?? messageIndex,
                 );
               },
               onController(controller) {
                 // collect controller for stop/retry
                 ControllerPool.addController(
-                    sessionIndex,
-                    botMessage.id ?? messageIndex,
-                    controller,
+                  sessionIndex,
+                  botMessage.id ?? messageIndex,
+                  controller,
                 );
               },
             });
@@ -357,7 +366,9 @@ export const useChatStore = create<ChatStore>()(
                 if (message) {
                   botMessage.content = message;
                 }
-                set(() => ({}));
+                get().updateCurrentSession((session) => {
+                  session.messages = session.messages.concat();
+                });
               },
               onFinish(message) {
                 accessStore.reduce();
@@ -367,27 +378,27 @@ export const useChatStore = create<ChatStore>()(
                   get().onNewMessage(botMessage);
                 }
                 ChatControllerPool.remove(
-                    sessionIndex,
-                    botMessage.id ?? messageIndex,
+                  sessionIndex,
+                  botMessage.id ?? messageIndex,
                 );
-                set(() => ({}));
               },
               onError(error) {
                 const isAborted = error.message.includes("aborted");
                 botMessage.content =
-                    "\n\n" +
-                    prettyObject({
-                      error: true,
-                      message: error.message,
-                    });
+                  "\n\n" +
+                  prettyObject({
+                    error: true,
+                    message: error.message,
+                  });
                 botMessage.streaming = false;
                 userMessage.isError = !isAborted;
                 botMessage.isError = !isAborted;
-
-                set(() => ({}));
+                get().updateCurrentSession((session) => {
+                  session.messages = session.messages.concat();
+                });
                 ChatControllerPool.remove(
-                    sessionIndex,
-                    botMessage.id ?? messageIndex,
+                  sessionIndex,
+                  botMessage.id ?? messageIndex,
                 );
 
                 console.error("[Chat] failed ", error);
@@ -395,9 +406,9 @@ export const useChatStore = create<ChatStore>()(
               onController(controller) {
                 // collect controller for stop/retry
                 ChatControllerPool.addController(
-                    sessionIndex,
-                    botMessage.id ?? messageIndex,
-                    controller,
+                  sessionIndex,
+                  botMessage.id ?? messageIndex,
+                  controller,
                 );
               },
             });

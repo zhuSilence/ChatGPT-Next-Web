@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { StoreKey, ACCESS_CODE_CHECK } from "../constant";
+import { DEFAULT_API_HOST, StoreKey, ACCESS_CODE_CHECK } from "../constant";
 import { getHeaders } from "../client/api";
 import { ALL_MODELS } from "./config";
+import { getClientConfig } from "../config/client";
 
 export interface AccessControlStore {
   accessCode: string;
@@ -14,11 +15,12 @@ export interface AccessControlStore {
 
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
+  updateOpenAiUrl: (_: string) => void;
   reduce: () => void;
   enabledAccessControl: () => boolean;
   leftChance: () => Promise<boolean>;
-  leftCount: number,
-  leftImgCount: number,
+  leftCount: number;
+  leftImgCount: number;
   isAuthorized: () => boolean;
   isImgAuthorized: () => boolean;
   fetch: () => void;
@@ -27,6 +29,10 @@ export interface AccessControlStore {
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 let flag = false;
 
+const DEFAULT_OPENAI_URL =
+  getClientConfig()?.buildMode === "export" ? DEFAULT_API_HOST : "/api/openai/";
+console.log("[API] default openai url", DEFAULT_OPENAI_URL);
+
 export const useAccessStore = create<AccessControlStore>()(
   persist(
     (set, get) => ({
@@ -34,7 +40,7 @@ export const useAccessStore = create<AccessControlStore>()(
       accessCode: "default",
       needCode: true,
       hideUserApiKey: false,
-      openaiUrl: "/api/openai/",
+      openaiUrl: DEFAULT_OPENAI_URL,
       leftCount: -1,
       leftImgCount: 0,
 
@@ -73,15 +79,18 @@ export const useAccessStore = create<AccessControlStore>()(
       updateToken(token: string) {
         set(() => ({ token }));
       },
+      updateOpenAiUrl(url: string) {
+        set(() => ({ openaiUrl: url }));
+      },
       isAuthorized() {
         get().fetch();
         return flag || !!get().accessCode;
       },
       isImgAuthorized() {
-          return this.leftImgCount > 0;
+        return this.leftImgCount > 0;
       },
       fetch() {
-        if (fetchState > 0) return;
+        if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
         fetchState = 1;
         fetch("/api/config", {
           method: "post",
@@ -102,7 +111,6 @@ export const useAccessStore = create<AccessControlStore>()(
                 }
               });
             }
-
           })
           .catch(() => {
             console.error("[Config] failed to fetch config");

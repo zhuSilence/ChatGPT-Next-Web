@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const es: LocaleType = {
+const es: PartialLocaleType = {
   WIP: "En construcción...",
   Error: {
     Unauthorized:
@@ -168,9 +168,9 @@ const es: LocaleType = {
     DefaultTopic: "Nueva conversación",
     BotHello: "¡Hola! ¿Cómo puedo ayudarte hoy?",
     BotHelloWithCommand: (command: string) =>
-        "¡Hola! ¿Cómo puedo ayudarte hoy?\n Para generar imágenes, usa `" +
-        command +
-        " {palabra clave}.`",
+      "¡Hola! ¿Cómo puedo ayudarte hoy?\n Para generar imágenes, usa `" +
+      command +
+      " {palabra clave}.`",
     Error: "Algo salió mal, por favor intenta nuevamente más tarde.",
     Prompt: {
       History: (content: string) =>

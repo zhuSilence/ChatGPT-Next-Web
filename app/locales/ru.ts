@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const ru: LocaleType = {
+const ru: PartialLocaleType = {
   WIP: "Скоро...",
   Error: {
     Unauthorized:
@@ -169,9 +169,9 @@ const ru: LocaleType = {
     DefaultTopic: "Новый разговор",
     BotHello: "Здравствуйте! Как я могу вам помочь сегодня?",
     BotHelloWithCommand: (command: string) =>
-        "Здравствуйте! Как я могу вам помочь сегодня?\n Чтобы создать изображения, используйте `" +
-        command +
-        " {ключевое слово}.`",
+      "Здравствуйте! Как я могу вам помочь сегодня?\n Чтобы создать изображения, используйте `" +
+      command +
+      " {ключевое слово}.`",
     Error: "Что-то пошло не так. Пожалуйста, попробуйте еще раз позже.",
     Prompt: {
       History: (content: string) =>

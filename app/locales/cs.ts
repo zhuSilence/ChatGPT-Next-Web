@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const cs: LocaleType = {
+const cs: PartialLocaleType = {
   WIP: "V přípravě...",
   Error: {
     Unauthorized:
@@ -167,9 +167,9 @@ const cs: LocaleType = {
     DefaultTopic: "Nová konverzace",
     BotHello: "Ahoj! Jak mohu dnes pomoci?",
     BotHelloWithCommand: (command: string) =>
-        "Ahoj! Jak mohu dnes pomoci?\n Pro generování obrázků použijte `" +
-        command +
-        " {klíčové slovo}.`",
+      "Ahoj! Jak mohu dnes pomoci?\n Pro generování obrázků použijte `" +
+      command +
+      " {klíčové slovo}.`",
     Error: "Něco se pokazilo, zkuste to prosím později.",
     Prompt: {
       History: (content: string) =>

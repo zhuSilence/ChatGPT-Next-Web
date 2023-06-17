@@ -120,8 +120,12 @@ export function SideBar(props: { className?: string }) {
         shouldNarrow && styles["narrow-sidebar"]
       }`}
     >
-      <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}><a href={HOME_URL} target="_blank">猿地崛起 YDFLY</a></div>
+      <div className={styles["sidebar-header"]} data-tauri-drag-region>
+        <div className={styles["sidebar-title"]} data-tauri-drag-region>
+          <a href={HOME_URL} target="_blank">
+            猿地崛起
+          </a>
+        </div>
         <div className={styles["sidebar-sub-title"]}>
           Build your own AI assistant.
         </div>
@@ -177,8 +181,13 @@ export function SideBar(props: { className?: string }) {
           </div>
           <div className={styles["sidebar-action"]}>
             <IconButton
-                icon={<Lightning />}
-                text={accessStore.leftCount == -1 ? '-' : accessStore.leftCount.toString()}/>
+              icon={<Lightning />}
+              text={
+                accessStore.leftCount == -1
+                  ? "-"
+                  : accessStore.leftCount.toString()
+              }
+            />
           </div>
         </div>
         <div>

@@ -1,12 +1,13 @@
-import {QR_CODE, SubmitKey, WX_XIN} from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
+import { QR_CODE, SubmitKey, WX_XIN } from "../store/config";
 
-const tw: LocaleType = {
+const tw: PartialLocaleType = {
   WIP: "該功能仍在開發中……",
   Error: {
-    Unauthorized: "出現此條訊息有如下兩個可能：\n\n1、未關注下方公眾號獲取初始額度，請關注下方公眾號獲取初始額度，然後點擊左下角設置按鈕輸入訪問密碼；\n\n2、初始額度已經用完，請在下方公眾號中回復：購買額度，購買後添加微信 zx1347023180 發送支付信息進行額度充值。\n\n " +
-    QR_CODE +
-    WX_XIN,
+    Unauthorized:
+      "出現此條訊息有如下兩個可能：\n\n1、未關注下方公眾號獲取初始額度，請關注下方公眾號獲取初始額度，然後點擊左下角設置按鈕輸入訪問密碼；\n\n2、初始額度已經用完，請在下方公眾號中回復：購買額度，購買後添加微信 zx1347023180 發送支付信息進行額度充值。\n\n " +
+      QR_CODE +
+      WX_XIN,
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 條對話`,
@@ -166,7 +167,7 @@ const tw: LocaleType = {
     DefaultTopic: "新的對話",
     BotHello: "請問需要我的協助嗎？",
     BotHelloWithCommand: (command: string) =>
-        "請問需要我的協助嗎？\n 若要生成圖片，請使用 `" + command + " {關鍵字}.`",
+      "請問需要我的協助嗎？\n 若要生成圖片，請使用 `" + command + " {關鍵字}.`",
     Error: "出錯了，請稍後再嘗試",
     Prompt: {
       History: (content: string) =>

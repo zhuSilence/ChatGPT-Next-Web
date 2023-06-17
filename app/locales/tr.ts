@@ -1,7 +1,7 @@
 import { SubmitKey } from "../store/config";
-import type { LocaleType } from "./index";
+import type { PartialLocaleType } from "./index";
 
-const tr: LocaleType = {
+const tr: PartialLocaleType = {
   WIP: "Çalışma devam ediyor...",
   Error: {
     Unauthorized:
@@ -170,9 +170,9 @@ const tr: LocaleType = {
     DefaultTopic: "Yeni Konuşma",
     BotHello: "Merhaba! Size bugün nasıl yardımcı olabilirim?",
     BotHelloWithCommand: (command: string) =>
-        "Merhaba! Size bugün nasıl yardımcı olabilirim?\n Resim oluşturmak için, `" +
-        command +
-        " {anahtar kelime}.` kullanın",
+      "Merhaba! Size bugün nasıl yardımcı olabilirim?\n Resim oluşturmak için, `" +
+      command +
+      " {anahtar kelime}.` kullanın",
     Error: "Bir şeyler yanlış gitti. Lütfen daha sonra tekrar deneyiniz.",
     Prompt: {
       History: (content: string) =>
