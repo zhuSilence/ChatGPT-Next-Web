@@ -165,6 +165,11 @@ const tr: PartialLocaleType = {
       SubTitle:
         "Daha büyük bir değer, yeni konular hakkında konuşma olasılığını artırır",
     },
+    FrequencyPenalty: {
+      Title: "Frekans Cezası",
+      SubTitle:
+        "Aynı satırı tekrar etme olasılığını azaltan daha büyük bir değer",
+    },
   },
   Store: {
     DefaultTopic: "Yeni Konuşma",
@@ -239,6 +244,12 @@ const tr: PartialLocaleType = {
     Close: "Close",
     Create: "Create",
     Edit: "Edit",
+  },
+  Exporter: {
+    Model: "Model",
+    Messages: "Mesajlar",
+    Topic: "Konu",
+    Time: "Zaman",
   },
 };
 

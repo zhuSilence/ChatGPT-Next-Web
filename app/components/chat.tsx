@@ -3,8 +3,8 @@ import React, {
   useState,
   useRef,
   useEffect,
-  useLayoutEffect,
   useMemo,
+  useCallback,
 } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
@@ -340,15 +340,15 @@ function useScrollToBottom() {
   // for auto-scroll
   const scrollRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     const dom = scrollRef.current;
     if (dom) {
-      setTimeout(() => (dom.scrollTop = dom.scrollHeight), 1);
+      requestAnimationFrame(() => dom.scrollTo(0, dom.scrollHeight));
     }
-  };
+  }, []);
 
   // auto scroll
-  useLayoutEffect(() => {
+  useEffect(() => {
     autoScroll && scrollToBottom();
   });
 
@@ -479,7 +479,7 @@ export function Chat() {
   const navigate = useNavigate();
 
   const onChatBodyScroll = (e: HTMLElement) => {
-    const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 100;
+    const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 10;
     setHitBottom(isTouchBottom);
   };
 
@@ -929,6 +929,9 @@ export function Chat() {
             onBlur={() => setAutoScroll(false)}
             rows={inputRows}
             autoFocus={autoFocus}
+            style={{
+              fontSize: config.fontSize,
+            }}
           />
           <IconButton
             icon={<SendWhiteIcon />}
