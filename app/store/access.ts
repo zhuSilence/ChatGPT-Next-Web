@@ -12,6 +12,7 @@ export interface AccessControlStore {
   needCode: boolean;
   hideUserApiKey: boolean;
   openaiUrl: string;
+  hideBalanceQuery: boolean;
 
   updateToken: (_: string) => void;
   updateCode: (_: string) => void;
@@ -43,6 +44,7 @@ export const useAccessStore = create<AccessControlStore>()(
       openaiUrl: DEFAULT_OPENAI_URL,
       leftCount: -1,
       leftImgCount: 0,
+      hideBalanceQuery: false,
 
       reduce() {
         fetch(ACCESS_CODE_CHECK.REDUCE_CHANCE + this.accessCode, {

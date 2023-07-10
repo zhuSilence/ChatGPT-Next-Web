@@ -21,6 +21,9 @@ import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
+import DeleteIcon from "../icons/clear.svg";
+import PinIcon from "../icons/pin.svg";
+import EditIcon from "../icons/rename.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -56,10 +59,9 @@ import { Prompt, usePromptStore } from "../store/prompt";
 import Locale from "../locales";
 
 import { IconButton } from "./button";
-import styles from "./home.module.scss";
-import chatStyle from "./chat.module.scss";
+import styles from "./chat.module.scss";
 
-import { ListItem, Modal } from "./ui-lib";
+import { ListItem, Modal, showConfirm, showPrompt, showToast } from "./ui-lib";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LAST_INPUT_KEY, Path, REQUEST_TIMEOUT_MS } from "../constant";
 import { Avatar } from "./emoji";
@@ -91,8 +93,8 @@ export function SessionConfigModel(props: { onClose: () => void }) {
             icon={<ResetIcon />}
             bordered
             text={Locale.Chat.Config.Reset}
-            onClick={() => {
-              if (confirm(Locale.Memory.ResetConfirm)) {
+            onClick={async () => {
+              if (await showConfirm(Locale.Memory.ResetConfirm)) {
                 chatStore.updateCurrentSession(
                   (session) => (session.memoryPrompt = ""),
                 );
@@ -147,15 +149,15 @@ function PromptToast(props: {
   const context = session.mask.context;
 
   return (
-    <div className={chatStyle["prompt-toast"]} key="prompt-toast">
+    <div className={styles["prompt-toast"]} key="prompt-toast">
       {props.showToast && (
         <div
-          className={chatStyle["prompt-toast-inner"] + " clickable"}
+          className={styles["prompt-toast-inner"] + " clickable"}
           role="button"
           onClick={() => props.setShowModal(true)}
         >
           <BrainIcon />
-          <span className={chatStyle["prompt-toast-content"]}>
+          <span className={styles["prompt-toast-content"]}>
             {Locale.Context.Toast(context.length)}
           </span>
         </div>
@@ -269,17 +271,15 @@ function ClearContextDivider() {
 
   return (
     <div
-      className={chatStyle["clear-context"]}
+      className={styles["clear-context"]}
       onClick={() =>
         chatStore.updateCurrentSession(
           (session) => (session.clearContextIndex = undefined),
         )
       }
     >
-      <div className={chatStyle["clear-context-tips"]}>
-        {Locale.Context.Clear}
-      </div>
-      <div className={chatStyle["clear-context-revert-btn"]}>
+      <div className={styles["clear-context-tips"]}>{Locale.Context.Clear}</div>
+      <div className={styles["clear-context-revert-btn"]}>
         {Locale.Context.Revert}
       </div>
     </div>
@@ -294,8 +294,8 @@ function ChatAction(props: {
   const iconRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState({
-    full: 20,
-    icon: 20,
+    full: 16,
+    icon: 16,
   });
 
   function updateWidth() {
@@ -309,17 +309,15 @@ function ChatAction(props: {
     });
   }
 
-  useEffect(() => {
-    updateWidth();
-  }, []);
-
   return (
     <div
-      className={`${chatStyle["chat-input-action"]} clickable`}
+      className={`${styles["chat-input-action"]} clickable`}
       onClick={() => {
         props.onClick();
         setTimeout(updateWidth, 1);
       }}
+      onMouseEnter={updateWidth}
+      onTouchStart={updateWidth}
       style={
         {
           "--icon-width": `${width.icon}px`,
@@ -327,10 +325,10 @@ function ChatAction(props: {
         } as React.CSSProperties
       }
     >
-      <div ref={iconRef} className={chatStyle["icon"]}>
+      <div ref={iconRef} className={styles["icon"]}>
         {props.icon}
       </div>
-      <div className={chatStyle["text"]} ref={textRef}>
+      <div className={styles["text"]} ref={textRef}>
         {props.text}
       </div>
     </div>
@@ -399,7 +397,7 @@ export function ChatActions(props: {
   }
 
   return (
-    <div className={chatStyle["chat-input-actions"]}>
+    <div className={styles["chat-input-actions"]}>
       {couldStop && (
         <ChatAction
           onClick={stopAll}
@@ -515,14 +513,6 @@ export function Chat() {
     { leading: true, trailing: true },
   );
 
-  const onPromptSelect = (prompt: Prompt) => {
-    setTimeout(() => {
-      setPromptHints([]);
-      setUserInput(prompt.content);
-      inputRef.current?.focus();
-    }, 30);
-  };
-
   // auto grow input
   const [inputRows, setInputRows] = useState(2);
   const measure = useDebouncedCallback(
@@ -595,6 +585,23 @@ export function Chat() {
     setPromptHints([]);
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
+  };
+
+  const onPromptSelect = (prompt: Prompt) => {
+    setTimeout(() => {
+      setPromptHints([]);
+
+      const matchedChatCommand = chatCommands.match(prompt.content);
+      if (matchedChatCommand.matched) {
+        // if user is selecting a chat command, just trigger it
+        matchedChatCommand.invoke();
+        setUserInput("");
+      } else {
+        // or fill the prompt
+        setUserInput(prompt.content);
+      }
+      inputRef.current?.focus();
+    }, 30);
   };
 
   // stop response
@@ -698,6 +705,24 @@ export function Chat() {
     inputRef.current?.focus();
   };
 
+  const onPinMessage = (botMessage: ChatMessage) => {
+    if (!botMessage.id) return;
+    const userMessageIndex = findLastUserIndex(botMessage.id);
+    if (userMessageIndex === null) return;
+
+    const userMessage = session.messages[userMessageIndex];
+    chatStore.updateCurrentSession((session) =>
+      session.mask.context.push(userMessage, botMessage),
+    );
+
+    showToast(Locale.Chat.Actions.PinToastContent, {
+      text: Locale.Chat.Actions.PinToastAction,
+      onClick: () => {
+        setShowPromptModal(true);
+      },
+    });
+  };
+
   const context: RenderMessage[] = session.mask.hideContext
     ? []
     : session.mask.context.slice();
@@ -753,10 +778,13 @@ export function Chat() {
   const [showPromptModal, setShowPromptModal] = useState(false);
 
   const renameSession = () => {
-    const newTopic = prompt(Locale.Chat.Rename, session.topic);
-    if (newTopic && newTopic !== session.topic) {
-      chatStore.updateCurrentSession((session) => (session.topic = newTopic!));
-    }
+    showPrompt(Locale.Chat.Rename, session.topic).then((newTopic) => {
+      if (newTopic && newTopic !== session.topic) {
+        chatStore.updateCurrentSession(
+          (session) => (session.topic = newTopic!),
+        );
+      }
+    });
   };
 
   const clientConfig = useMemo(() => getClientConfig(), []);
@@ -777,9 +805,22 @@ export function Chat() {
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header" data-tauri-drag-region>
-        <div className="window-header-title">
+        {isMobileScreen && (
+          <div className="window-actions">
+            <div className={"window-action-button"}>
+              <IconButton
+                icon={<ReturnIcon />}
+                bordered
+                title={Locale.Chat.Actions.ChatList}
+                onClick={() => navigate(Path.Home)}
+              />
+            </div>
+          </div>
+        )}
+
+        <div className={`window-header-title ${styles["chat-body-title"]}`}>
           <div
-            className={`window-header-main-title " ${styles["chat-body-title"]}`}
+            className={`window-header-main-title ${styles["chat-body-main-title"]}`}
             onClickCapture={renameSession}
           >
             {!session.topic ? DEFAULT_TOPIC : session.topic}
@@ -789,21 +830,15 @@ export function Chat() {
           </div>
         </div>
         <div className="window-actions">
-          <div className={"window-action-button" + " " + styles.mobile}>
-            <IconButton
-              icon={<ReturnIcon />}
-              bordered
-              title={Locale.Chat.Actions.ChatList}
-              onClick={() => navigate(Path.Home)}
-            />
-          </div>
-          <div className="window-action-button">
-            <IconButton
-              icon={<RenameIcon />}
-              bordered
-              onClick={renameSession}
-            />
-          </div>
+          {!isMobileScreen && (
+            <div className="window-action-button">
+              <IconButton
+                icon={<RenameIcon />}
+                bordered
+                onClick={renameSession}
+              />
+            </div>
+          )}
           <div className="window-action-button">
             <IconButton
               icon={<ExportIcon />}
@@ -867,7 +902,26 @@ export function Chat() {
               >
                 <div className={styles["chat-message-container"]}>
                   <div className={styles["chat-message-avatar"]}>
-                    {message.role === "user" ? (
+                    <div className={styles["chat-message-edit"]}>
+                      <IconButton
+                        icon={<EditIcon />}
+                        onClick={async () => {
+                          const newMessage = await showPrompt(
+                            Locale.Chat.Actions.Edit,
+                            message.content,
+                          );
+                          chatStore.updateCurrentSession((session) => {
+                            const m = session.messages.find(
+                              (m) => m.id === message.id,
+                            );
+                            if (m) {
+                              m.content = newMessage;
+                            }
+                          });
+                        }}
+                      ></IconButton>
+                    </div>
+                    {isUser ? (
                       <Avatar avatar={config.avatar} />
                     ) : (
                       <MaskAvatar mask={session.mask} />
@@ -879,40 +933,6 @@ export function Chat() {
                     </div>
                   )}
                   <div className={styles["chat-message-item"]}>
-                    {showActions && (
-                      <div className={styles["chat-message-top-actions"]}>
-                        {message.streaming ? (
-                          <div
-                            className={styles["chat-message-top-action"]}
-                            onClick={() => onUserStop(message.id ?? i)}
-                          >
-                            {Locale.Chat.Actions.Stop}
-                          </div>
-                        ) : (
-                          <>
-                            <div
-                              className={styles["chat-message-top-action"]}
-                              onClick={() => onDelete(message.id ?? i)}
-                            >
-                              {Locale.Chat.Actions.Delete}
-                            </div>
-                            <div
-                              className={styles["chat-message-top-action"]}
-                              onClick={() => onResend(message.id ?? i)}
-                            >
-                              {Locale.Chat.Actions.Retry}
-                            </div>
-                          </>
-                        )}
-
-                        <div
-                          className={styles["chat-message-top-action"]}
-                          onClick={() => copyToClipboard(message.content)}
-                        >
-                          {Locale.Chat.Actions.Copy}
-                        </div>
-                      </div>
-                    )}
                     <Markdown
                       content={message.content}
                       images={message.images}
@@ -930,12 +950,56 @@ export function Chat() {
                       parentRef={scrollRef}
                       defaultShow={i >= messages.length - 10}
                     />
-                  </div>
-                  {!isUser && !message.preview && (
-                    <div className={styles["chat-message-actions"]}>
-                      <div className={styles["chat-message-action-date"]}>
-                        {message.date.toLocaleString()}
+
+                    {showActions && (
+                      <div className={styles["chat-message-actions"]}>
+                        <div
+                          className={styles["chat-input-actions"]}
+                          style={{
+                            marginTop: 10,
+                            marginBottom: 0,
+                          }}
+                        >
+                          {message.streaming ? (
+                            <ChatAction
+                              text={Locale.Chat.Actions.Stop}
+                              icon={<StopIcon />}
+                              onClick={() => onUserStop(message.id ?? i)}
+                            />
+                          ) : (
+                            <>
+                              <ChatAction
+                                text={Locale.Chat.Actions.Retry}
+                                icon={<ResetIcon />}
+                                onClick={() => onResend(message.id ?? i)}
+                              />
+
+                              <ChatAction
+                                text={Locale.Chat.Actions.Delete}
+                                icon={<DeleteIcon />}
+                                onClick={() => onDelete(message.id ?? i)}
+                              />
+
+                              <ChatAction
+                                text={Locale.Chat.Actions.Pin}
+                                icon={<PinIcon />}
+                                onClick={() => onPinMessage(message)}
+                              />
+                              <ChatAction
+                                text={Locale.Chat.Actions.Copy}
+                                icon={<CopyIcon />}
+                                onClick={() => copyToClipboard(message.content)}
+                              />
+                            </>
+                          )}
+                        </div>
                       </div>
+                    )}
+                  </div>
+
+                  {showActions && (
+                    <div className={styles["chat-message-action-date"]}>
+                      {message.date.toLocaleString()}
                     </div>
                   )}
                 </div>
