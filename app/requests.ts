@@ -215,11 +215,11 @@ export async function requestImage(
 
         const finish = (images: ImagesResponseDataInner[]) => {
           // let contentString = "";
-          // images.forEach((img) => {
-          //   if (img.url) {
-          //     contentString += "![](" + img.url + ") ";
-          //   }
-          // });
+          images.forEach((img) => {
+            if (img.url) {
+              console.log(img.url);
+            }
+          });
           options?.onMessage(" ", images, null, true);
           controller.abort();
         };
