@@ -10,9 +10,11 @@ import {
   useAppConfig,
 } from "./config";
 import { StoreKey } from "../constant";
+import { nanoid } from "nanoid";
 
 export type Mask = {
-  id: number;
+  id: string;
+  createdAt: number;
   avatar: string;
   name: string;
   hideContext?: boolean;
@@ -25,25 +27,23 @@ export type Mask = {
 };
 
 export const DEFAULT_MASK_STATE = {
-  masks: {} as Record<number, Mask>,
-  globalMaskId: 0,
+  masks: {} as Record<string, Mask>,
 };
 
 export type MaskState = typeof DEFAULT_MASK_STATE;
 type MaskStore = MaskState & {
   create: (mask?: Partial<Mask>) => Mask;
-  update: (id: number, updater: (mask: Mask) => void) => void;
-  delete: (id: number) => void;
+  update: (id: string, updater: (mask: Mask) => void) => void;
+  delete: (id: string) => void;
   search: (text: string) => Mask[];
-  get: (id?: number) => Mask | null;
+  get: (id?: string) => Mask | null;
   getAll: () => Mask[];
 };
 
-export const DEFAULT_MASK_ID = 1145141919810;
 export const DEFAULT_MASK_AVATAR = "gpt-bot";
 export const createEmptyMask = () =>
   ({
-    id: DEFAULT_MASK_ID,
+    id: nanoid(),
     avatar: DEFAULT_MASK_AVATAR,
     name: DEFAULT_TOPIC,
     context: [],
@@ -52,6 +52,7 @@ export const createEmptyMask = () =>
     imageModelConfig: { ...useAppConfig.getState().imageModelConfig },
     lang: getLang(),
     builtin: false,
+    createdAt: Date.now(),
   } as Mask);
 
 export const useMaskStore = create<MaskStore>()(
@@ -60,9 +61,8 @@ export const useMaskStore = create<MaskStore>()(
       ...DEFAULT_MASK_STATE,
 
       create(mask) {
-        set(() => ({ globalMaskId: get().globalMaskId + 1 }));
-        const id = get().globalMaskId;
         const masks = get().masks;
+        const id = nanoid();
         masks[id] = {
           ...createEmptyMask(),
           ...mask,
@@ -94,9 +94,10 @@ export const useMaskStore = create<MaskStore>()(
       },
       getAll() {
         const userMasks = Object.values(get().masks).sort(
-          (a, b) => b.id - a.id,
+          (a, b) => b.createdAt - a.createdAt,
         );
         const config = useAppConfig.getState();
+        if (config.hideBuiltinMasks) return userMasks;
         const buildinMasks = BUILTIN_MASKS.map(
           (m) =>
             ({
@@ -115,7 +116,26 @@ export const useMaskStore = create<MaskStore>()(
     }),
     {
       name: StoreKey.Mask,
-      version: 2,
+      version: 3.1,
+
+      migrate(state, version) {
+        const newState = JSON.parse(JSON.stringify(state)) as MaskState;
+
+        // migrate mask id to nanoid
+        if (version < 3) {
+          Object.values(newState.masks).forEach((m) => (m.id = nanoid()));
+        }
+
+        if (version < 3.1) {
+          const updatedMasks: Record<string, Mask> = {};
+          Object.values(newState.masks).forEach((m) => {
+            updatedMasks[m.id] = m;
+          });
+          newState.masks = updatedMasks;
+        }
+
+        return newState as any;
+      },
     },
   ),
 );

@@ -49,8 +49,9 @@ import { Avatar, AvatarPicker } from "./emoji";
 import { ImageModelConfigList } from "./image-model-config";
 import { getClientConfig } from "../config/client";
 import { useSyncStore } from "../store/sync";
+import { nanoid } from "nanoid";
 
-function EditPromptModal(props: { id: number; onClose: () => void }) {
+function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
   const prompt = promptStore.get(props.id);
 
@@ -108,7 +109,7 @@ function UserPromptModal(props: { onClose?: () => void }) {
   const [searchPrompts, setSearchPrompts] = useState<Prompt[]>([]);
   const prompts = searchInput.length > 0 ? searchPrompts : allPrompts;
 
-  const [editingPromptId, setEditingPromptId] = useState<number>();
+  const [editingPromptId, setEditingPromptId] = useState<string>();
 
   useEffect(() => {
     if (searchInput.length > 0) {
@@ -129,6 +130,8 @@ function UserPromptModal(props: { onClose?: () => void }) {
             key="add"
             onClick={() =>
               promptStore.add({
+                id: nanoid(),
+                createdAt: Date.now(),
                 title: "Empty Prompt",
                 content: "Empty Prompt Content",
               })
@@ -316,7 +319,6 @@ export function Settings() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const config = useAppConfig();
   const updateConfig = config.update;
-  const chatStore = useChatStore();
 
   const updateStore = useUpdateStore();
   const [checkingUpdate, setCheckingUpdate] = useState(false);
@@ -341,6 +343,10 @@ export function Settings() {
   };
   const [loadingUsage, setLoadingUsage] = useState(false);
   function checkUsage(force = false) {
+    if (accessStore.hideBalanceQuery) {
+      return;
+    }
+
     setLoadingUsage(true);
     updateStore.updateUsage(force).finally(() => {
       setLoadingUsage(false);
@@ -519,10 +525,12 @@ export function Settings() {
               }
             ></input>
           </ListItem>
+        </List>
 
+        <List>
           <ListItem
-            title={Locale.Settings.Mask.Title}
-            subTitle={Locale.Settings.Mask.SubTitle}
+            title={Locale.Settings.Mask.Splash.Title}
+            subTitle={Locale.Settings.Mask.Splash.SubTitle}
           >
             <input
               type="checkbox"
@@ -536,82 +544,22 @@ export function Settings() {
               }
             ></input>
           </ListItem>
-        </List>
 
-        <List>
-          {showAccessCode ? (
-            <ListItem
-              title={Locale.Settings.AccessCode.Title}
-              subTitle={Locale.Settings.AccessCode.SubTitle}
-            >
-              <PasswordInput
-                value={accessStore.accessCode}
-                type="text"
-                placeholder={Locale.Settings.AccessCode.Placeholder}
-                onChange={(e) => {
-                  accessStore.updateCode(e.currentTarget.value);
-                }}
-              />
-            </ListItem>
-          ) : (
-            <></>
-          )}
-
-          {/*{!accessStore.hideUserApiKey ? (*/}
-          {/*  <ListItem*/}
-          {/*    title={Locale.Settings.Token.Title}*/}
-          {/*    subTitle={Locale.Settings.Token.SubTitle}*/}
-          {/*  >*/}
-          {/*    <PasswordInput*/}
-          {/*      value={accessStore.token}*/}
-          {/*      type="text"*/}
-          {/*      placeholder={Locale.Settings.Token.Placeholder}*/}
-          {/*      onChange={(e) => {*/}
-          {/*        accessStore.updateToken(e.currentTarget.value);*/}
-          {/*      }}*/}
-          {/*    />*/}
-          {/*  </ListItem>*/}
-          {/*) : null}*/}
-
-          {/* <ListItem
-            title={Locale.Settings.Usage.Title}
-            subTitle={
-              showUsage
-                ? loadingUsage
-                  ? Locale.Settings.Usage.IsChecking
-                  : Locale.Settings.Usage.SubTitle(
-                      usage?.used ?? "[?]",
-                      usage?.subscription ?? "[?]",
-                    )
-                : Locale.Settings.Usage.NoAccess
-            }
+          <ListItem
+            title={Locale.Settings.Mask.Builtin.Title}
+            subTitle={Locale.Settings.Mask.Builtin.SubTitle}
           >
-            {!showUsage || loadingUsage ? (
-              <div />
-            ) : (
-              <IconButton
-                icon={<ResetIcon></ResetIcon>}
-                text={Locale.Settings.Usage.Check}
-                onClick={() => checkUsage(true)}
-              />
-            )}
-          </ListItem> */}
-
-          {!accessStore.hideUserApiKey ? (
-            <ListItem
-              title={Locale.Settings.Endpoint.Title}
-              subTitle={Locale.Settings.Endpoint.SubTitle}
-            >
-              <input
-                type="text"
-                value={accessStore.openaiUrl}
-                placeholder="https://api.openai.com/"
-                onChange={(e) =>
-                  accessStore.updateOpenAiUrl(e.currentTarget.value)
-                }
-              ></input>
-            </ListItem>
-          ) : null}
+            <input
+              type="checkbox"
+              checked={config.hideBuiltinMasks}
+              onChange={(e) =>
+                updateConfig(
+                  (config) =>
+                    (config.hideBuiltinMasks = e.currentTarget.checked),
+                )
+              }
+            ></input>
+          </ListItem>
         </List>
 
         <List>
@@ -643,6 +591,99 @@ export function Settings() {
               text={Locale.Settings.Prompt.Edit}
               onClick={() => setShowPromptModal(true)}
             />
+          </ListItem>
+        </List>
+
+        <List>
+          {showAccessCode ? (
+            <ListItem
+              title={Locale.Settings.AccessCode.Title}
+              subTitle={Locale.Settings.AccessCode.SubTitle}
+            >
+              <PasswordInput
+                value={accessStore.accessCode}
+                type="text"
+                placeholder={Locale.Settings.AccessCode.Placeholder}
+                onChange={(e) => {
+                  accessStore.updateCode(e.currentTarget.value);
+                }}
+              />
+            </ListItem>
+          ) : (
+            <></>
+          )}
+
+          {/*{!accessStore.hideUserApiKey ? (*/}
+          {/*  <>*/}
+          {/*    <ListItem*/}
+          {/*      title={Locale.Settings.Endpoint.Title}*/}
+          {/*      subTitle={Locale.Settings.Endpoint.SubTitle}*/}
+          {/*    >*/}
+          {/*      <input*/}
+          {/*        type="text"*/}
+          {/*        value={accessStore.openaiUrl}*/}
+          {/*        placeholder="https://api.openai.com/"*/}
+          {/*        onChange={(e) =>*/}
+          {/*          accessStore.updateOpenAiUrl(e.currentTarget.value)*/}
+          {/*        }*/}
+          {/*      ></input>*/}
+          {/*    </ListItem>*/}
+          {/*    <ListItem*/}
+          {/*      title={Locale.Settings.Token.Title}*/}
+          {/*      subTitle={Locale.Settings.Token.SubTitle}*/}
+          {/*    >*/}
+          {/*      <PasswordInput*/}
+          {/*        value={accessStore.token}*/}
+          {/*        type="text"*/}
+          {/*        placeholder={Locale.Settings.Token.Placeholder}*/}
+          {/*        onChange={(e) => {*/}
+          {/*          accessStore.updateToken(e.currentTarget.value);*/}
+          {/*        }}*/}
+          {/*      />*/}
+          {/*    </ListItem>*/}
+          {/*  </>*/}
+          {/*) : null}*/}
+
+          {/*{!accessStore.hideBalanceQuery ? (*/}
+          {/*  <ListItem*/}
+          {/*    title={Locale.Settings.Usage.Title}*/}
+          {/*    subTitle={*/}
+          {/*      showUsage*/}
+          {/*        ? loadingUsage*/}
+          {/*          ? Locale.Settings.Usage.IsChecking*/}
+          {/*          : Locale.Settings.Usage.SubTitle(*/}
+          {/*              usage?.used ?? "[?]",*/}
+          {/*              usage?.subscription ?? "[?]",*/}
+          {/*            )*/}
+          {/*        : Locale.Settings.Usage.NoAccess*/}
+          {/*    }*/}
+          {/*  >*/}
+          {/*    {!showUsage || loadingUsage ? (*/}
+          {/*      <div />*/}
+          {/*    ) : (*/}
+          {/*      <IconButton*/}
+          {/*        icon={<ResetIcon></ResetIcon>}*/}
+          {/*        text={Locale.Settings.Usage.Check}*/}
+          {/*        onClick={() => checkUsage(true)}*/}
+          {/*      />*/}
+          {/*    )}*/}
+          {/*  </ListItem>*/}
+          {/*) : null}*/}
+
+          <ListItem
+            title={Locale.Settings.CustomModel.Title}
+            subTitle={Locale.Settings.CustomModel.SubTitle}
+          >
+            <input
+              type="text"
+              value={config.customModels}
+              placeholder="model1,model2,model3"
+              onChange={(e) =>
+                config.update(
+                  (config) => (config.customModels = e.currentTarget.value),
+                )
+              }
+            ></input>
           </ListItem>
         </List>
 

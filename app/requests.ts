@@ -17,6 +17,8 @@ import {
   ImagesResponseDataInner,
 } from "openai";
 import { OpenaiPath } from "@/app/constant";
+import { ROLES } from "@/app/client/api";
+import { nanoid } from "nanoid";
 
 const TIME_OUT_MS = 60000;
 
@@ -337,6 +339,7 @@ export async function requestWithPrompt(
 ) {
   messages = messages.concat([
     {
+      id: nanoid(),
       role: "user",
       content: prompt,
       date: new Date().toLocaleString(),
@@ -353,8 +356,8 @@ export const ControllerPool = {
   controllers: {} as Record<string, AbortController>,
 
   addController(
-    sessionIndex: number,
-    messageId: number,
+    sessionIndex: string,
+    messageId: string,
     controller: AbortController,
   ) {
     const key = this.key(sessionIndex, messageId);
@@ -362,7 +365,7 @@ export const ControllerPool = {
     return key;
   },
 
-  stop(sessionIndex: number, messageId: number) {
+  stop(sessionIndex: string, messageId: string) {
     const key = this.key(sessionIndex, messageId);
     const controller = this.controllers[key];
     controller?.abort();
@@ -376,12 +379,12 @@ export const ControllerPool = {
     return Object.values(this.controllers).length > 0;
   },
 
-  remove(sessionIndex: number, messageId: number) {
+  remove(sessionIndex: string, messageId: string) {
     const key = this.key(sessionIndex, messageId);
     delete this.controllers[key];
   },
 
-  key(sessionIndex: number, messageIndex: number) {
+  key(sessionIndex: string, messageIndex: string) {
     return `${sessionIndex},${messageIndex}`;
   },
 };
