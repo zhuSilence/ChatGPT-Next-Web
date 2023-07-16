@@ -1060,6 +1060,8 @@ export function Chat() {
                   <div className={styles["chat-message-item"]}>
                     <Markdown
                       content={message.content}
+                      images={message.images}
+                      image_alt={message.image_alt}
                       loading={
                         (message.preview || message.content.length === 0) &&
                         !isUser
