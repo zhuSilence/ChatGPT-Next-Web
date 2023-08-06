@@ -75,6 +75,7 @@ export const useAccessStore = create<AccessControlStore>()(
         flag = result.data.openApiCount > 0;
         this.leftCount = Math.max(result.data.openApiCount - 1, 0);
         this.leftImgCount = result.data.imageApiCount;
+        this.disableGPT4 = result.data.enableGpt4 > 0;
         return flag;
       },
       enabledAccessControl() {
