@@ -76,6 +76,11 @@ export const useAccessStore = create<AccessControlStore>()(
         this.leftCount = Math.max(result.data.openApiCount - 1, 0);
         this.leftImgCount = result.data.imageApiCount;
         this.disableGPT4 = result.data.enableGpt4 > 0;
+        if (this.disableGPT4) {
+          DEFAULT_MODELS.forEach(
+            (m: any) => (m.available = !m.name.startsWith("gpt-4")),
+          );
+        }
         return flag;
       },
       enabledAccessControl() {
@@ -112,11 +117,12 @@ export const useAccessStore = create<AccessControlStore>()(
             console.log("[Config] got config from server", res);
             set(() => ({ ...res }));
 
-            if (res.disableGPT4 || this.disableGPT4) {
+            if (res.disableGPT4) {
               DEFAULT_MODELS.forEach(
                 (m: any) => (m.available = !m.name.startsWith("gpt-4")),
               );
             }
+            this.leftChance();
           })
           .catch(() => {
             console.error("[Config] failed to fetch config");
