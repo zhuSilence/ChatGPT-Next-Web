@@ -123,7 +123,7 @@ export const useAccessStore = create<AccessControlStore>()(
               );
             }
           })
-          .then((res) => {
+          .then(() => {
             fetch(ACCESS_CODE_CHECK.LEFT_CHANCE + this.accessCode, {
               method: "post",
               headers: {},
@@ -132,7 +132,7 @@ export const useAccessStore = create<AccessControlStore>()(
               .then((res) => res.json())
               .then((res) => {
                 this.disableGPT4 = res.data.enableGpt4 > 0;
-                if (this.disableGPT4) {
+                if (!this.disableGPT4) {
                   DEFAULT_MODELS.forEach(
                     (m: any) => (m.available = !m.name.startsWith("gpt-4")),
                   );
