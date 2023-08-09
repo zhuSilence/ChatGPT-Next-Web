@@ -122,7 +122,22 @@ export const useAccessStore = create<AccessControlStore>()(
                 (m: any) => (m.available = !m.name.startsWith("gpt-4")),
               );
             }
-            this.leftChance();
+          })
+          .then((res) => {
+            fetch(ACCESS_CODE_CHECK.LEFT_CHANCE + this.accessCode, {
+              method: "post",
+              headers: {},
+              body: null,
+            })
+              .then((res) => res.json())
+              .then((res) => {
+                this.disableGPT4 = res.data.enableGpt4 > 0;
+                if (this.disableGPT4) {
+                  DEFAULT_MODELS.forEach(
+                    (m: any) => (m.available = !m.name.startsWith("gpt-4")),
+                  );
+                }
+              });
           })
           .catch(() => {
             console.error("[Config] failed to fetch config");
