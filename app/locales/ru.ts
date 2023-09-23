@@ -202,6 +202,9 @@ const ru: PartialLocaleType = {
   Plugin: {
     Name: "Плагин",
   },
+  FineTuned: {
+    Sysmessage: "Вы - ассистент, который",
+  },
   Mask: {
     Name: "Маска",
     Page: {

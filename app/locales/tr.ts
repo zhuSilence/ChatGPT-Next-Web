@@ -202,6 +202,9 @@ const tr: PartialLocaleType = {
   Plugin: {
     Name: "Plugin",
   },
+  FineTuned: {
+    Sysmessage: "Sen bir asistansın",
+  },
   Mask: {
     Name: "Mask",
     Page: {
