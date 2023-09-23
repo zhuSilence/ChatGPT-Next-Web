@@ -36,7 +36,7 @@ console.log("[API] default openai url", DEFAULT_OPENAI_URL);
 
 const DEFAULT_ACCESS_STATE = {
   token: "",
-  accessCode: "",
+  accessCode: "default",
   needCode: true,
   hideUserApiKey: false,
   hideBalanceQuery: false,
