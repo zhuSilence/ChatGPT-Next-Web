@@ -41,8 +41,18 @@ const DEFAULT_ACCESS_STATE = {
   hideUserApiKey: false,
   hideBalanceQuery: false,
   disableGPT4: false,
-
   openaiUrl: DEFAULT_OPENAI_URL,
+  updateToken: function (_: string) {},
+  updateCode: function (_: string) {},
+  updateOpenAiUrl: function (_: string) {},
+  reduce: function () {},
+  enabledAccessControl: function () {},
+  leftChance: function () {},
+  leftCount: 0,
+  leftImgCount: 0,
+  isAuthorized: function () {},
+  isImgAuthorized: function () {},
+  fetch: function () {},
 };
 
 export const useAccessStore = createPersistStore(
