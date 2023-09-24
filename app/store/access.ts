@@ -37,7 +37,7 @@ export const useAccessStore = createPersistStore(
 
   (set, get) => ({
     enabledAccessControl() {
-      this.fetch();
+      get().fetch();
 
       return get().needCode;
     },
@@ -63,10 +63,10 @@ export const useAccessStore = createPersistStore(
       );
       const result = await response.json();
       flag = result.data.openApiCount > 0;
-      this.leftCount = Math.max(result.data.openApiCount - 1, 0);
-      this.leftImgCount = result.data.imageApiCount;
-      this.disableGPT4 = result.data.enableGpt4 > 0;
-      if (this.disableGPT4) {
+      set({ leftCount: Math.max(result.data.openApiCount - 1, 0) });
+      set({ leftImgCount: result.data.imageApiCount });
+      set({ disableGPT4: result.data.enableGpt4 > 0 });
+      if (get().disableGPT4) {
         DEFAULT_MODELS.forEach(
           (m: any) => (m.available = !m.name.startsWith("gpt-4")),
         );
@@ -90,7 +90,7 @@ export const useAccessStore = createPersistStore(
       return flag || !!get().accessCode;
     },
     isImgAuthorized() {
-      return DEFAULT_ACCESS_STATE.leftImgCount > 0;
+      return get().leftImgCount > 0;
     },
     fetch() {
       if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
