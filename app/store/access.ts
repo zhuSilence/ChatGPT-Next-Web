@@ -121,8 +121,8 @@ export const useAccessStore = createPersistStore(
           })
             .then((res) => res.json())
             .then((res) => {
-              this.disableGPT4 = res.data.enableGpt4 > 0;
-              if (!this.disableGPT4) {
+              set(() => ({ disableGPT4: res.data.enableGpt4 > 0 }));
+              if (!get().disableGPT4) {
                 DEFAULT_MODELS.forEach(
                   (m: any) => (m.available = !m.name.startsWith("gpt-4")),
                 );
