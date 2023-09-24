@@ -42,7 +42,7 @@ export const useAccessStore = createPersistStore(
       return get().needCode;
     },
     reduce() {
-      fetch(ACCESS_CODE_CHECK.REDUCE_CHANCE + DEFAULT_ACCESS_STATE.accessCode, {
+      fetch(ACCESS_CODE_CHECK.REDUCE_CHANCE + get().accessCode, {
         method: "post",
         headers: {},
         body: null,
@@ -54,7 +54,7 @@ export const useAccessStore = createPersistStore(
     },
     async leftChance() {
       const response = await fetch(
-        ACCESS_CODE_CHECK.LEFT_CHANCE + DEFAULT_ACCESS_STATE.accessCode,
+        ACCESS_CODE_CHECK.LEFT_CHANCE + get().accessCode,
         {
           method: "post",
           headers: {},
@@ -114,14 +114,11 @@ export const useAccessStore = createPersistStore(
           }
         })
         .then(() => {
-          fetch(
-            ACCESS_CODE_CHECK.LEFT_CHANCE + DEFAULT_ACCESS_STATE.accessCode,
-            {
-              method: "post",
-              headers: {},
-              body: null,
-            },
-          )
+          fetch(ACCESS_CODE_CHECK.LEFT_CHANCE + get().accessCode, {
+            method: "post",
+            headers: {},
+            body: null,
+          })
             .then((res) => res.json())
             .then((res) => {
               this.disableGPT4 = res.data.enableGpt4 > 0;
