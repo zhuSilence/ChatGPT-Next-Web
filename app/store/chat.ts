@@ -28,7 +28,6 @@ import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
 import { nanoid } from "nanoid";
-import { AccessControlStore, useAccessStore } from "./access";
 import { createPersistStore } from "../utils/store";
 
 export type ChatMessage = RequestMessage & {
@@ -115,10 +114,7 @@ interface ChatStore {
   currentSession: () => ChatSession;
   nextSession: (delta: number) => void;
   onNewMessage: (message: ChatMessage) => void;
-  onUserInput: (
-    content: string,
-    accessStore: AccessControlStore,
-  ) => Promise<void>;
+  onUserInput: (content: string, accessStore: any) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;

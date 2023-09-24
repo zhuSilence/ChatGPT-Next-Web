@@ -4,29 +4,6 @@ import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 
-export interface AccessControlStore {
-  accessCode: string;
-  token: string;
-
-  needCode: boolean;
-  hideUserApiKey: boolean;
-  hideBalanceQuery: boolean;
-  disableGPT4: boolean;
-
-  openaiUrl: string;
-
-  updateToken: (_: string) => void;
-  updateCode: (_: string) => void;
-  updateOpenAiUrl: (_: string) => void;
-  reduce: () => void;
-  enabledAccessControl: () => boolean;
-  leftChance: () => Promise<boolean>;
-  leftCount: number;
-  leftImgCount: number;
-  isAuthorized: () => boolean;
-  isImgAuthorized: () => boolean;
-  fetch: () => void;
-}
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 let flag = false;
 
@@ -65,7 +42,7 @@ export const useAccessStore = createPersistStore(
       return get().needCode;
     },
     reduce() {
-      fetch(ACCESS_CODE_CHECK.REDUCE_CHANCE + this.accessCode, {
+      fetch(ACCESS_CODE_CHECK.REDUCE_CHANCE + DEFAULT_ACCESS_STATE.accessCode, {
         method: "post",
         headers: {},
         body: null,
@@ -77,7 +54,7 @@ export const useAccessStore = createPersistStore(
     },
     async leftChance() {
       const response = await fetch(
-        ACCESS_CODE_CHECK.LEFT_CHANCE + this.accessCode,
+        ACCESS_CODE_CHECK.LEFT_CHANCE + DEFAULT_ACCESS_STATE.accessCode,
         {
           method: "post",
           headers: {},
@@ -113,7 +90,7 @@ export const useAccessStore = createPersistStore(
       return flag || !!get().accessCode;
     },
     isImgAuthorized() {
-      return this.leftImgCount > 0;
+      return DEFAULT_ACCESS_STATE.leftImgCount > 0;
     },
     fetch() {
       if (fetchState > 0 || getClientConfig()?.buildMode === "export") return;
@@ -137,11 +114,14 @@ export const useAccessStore = createPersistStore(
           }
         })
         .then(() => {
-          fetch(ACCESS_CODE_CHECK.LEFT_CHANCE + this.accessCode, {
-            method: "post",
-            headers: {},
-            body: null,
-          })
+          fetch(
+            ACCESS_CODE_CHECK.LEFT_CHANCE + DEFAULT_ACCESS_STATE.accessCode,
+            {
+              method: "post",
+              headers: {},
+              body: null,
+            },
+          )
             .then((res) => res.json())
             .then((res) => {
               this.disableGPT4 = res.data.enableGpt4 > 0;
