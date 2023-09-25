@@ -28,7 +28,7 @@ const DEFAULT_ACCESS_STATE = {
   leftCount: 0,
   leftImgCount: 0,
   // isAuthorized: function () {},
-  isImgAuthorized: function () {},
+  // isImgAuthorized: function () {},
   fetch: function () {},
 };
 
