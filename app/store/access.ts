@@ -23,7 +23,7 @@ const DEFAULT_ACCESS_STATE = {
   updateCode: function (_: string) {},
   updateOpenAiUrl: function (_: string) {},
   reduce: function () {},
-  enabledAccessControl: function () {},
+  // enabledAccessControl: function () {},
   leftChance: function () {},
   leftCount: 0,
   leftImgCount: 0,
@@ -36,11 +36,6 @@ export const useAccessStore = createPersistStore(
   { ...DEFAULT_ACCESS_STATE },
 
   (set, get) => ({
-    enabledAccessControl() {
-      get().fetch();
-
-      return get().needCode;
-    },
     reduce() {
       fetch(ACCESS_CODE_CHECK.REDUCE_CHANCE + get().accessCode, {
         method: "post",
