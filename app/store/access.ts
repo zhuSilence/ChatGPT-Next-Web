@@ -27,7 +27,7 @@ const DEFAULT_ACCESS_STATE = {
   leftChance: function () {},
   leftCount: 0,
   leftImgCount: 0,
-  isAuthorized: function () {},
+  // isAuthorized: function () {},
   isImgAuthorized: function () {},
   fetch: function () {},
 };
