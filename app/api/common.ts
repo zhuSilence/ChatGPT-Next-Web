@@ -55,7 +55,7 @@ export async function requestOpenai(req: NextRequest, enableGpt4: boolean) {
   };
 
   // #1815 try to refuse gpt4 request
-  if (enableGpt4 && req.body) {
+  if (!enableGpt4 && req.body) {
     try {
       const clonedBody = await req.text();
       fetchOptions.body = clonedBody;
