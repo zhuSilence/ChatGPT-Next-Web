@@ -6,7 +6,7 @@ const PROTOCOL = process.env.PROTOCOL || DEFAULT_PROTOCOL;
 const BASE_URL = process.env.BASE_URL || OPENAI_URL;
 const DISABLE_GPT4 = !!process.env.DISABLE_GPT4;
 
-export async function requestOpenai(req: NextRequest) {
+export async function requestOpenai(req: NextRequest, enableGpt4: boolean) {
   const controller = new AbortController();
   const authValue = req.headers.get("Authorization") ?? "";
   const openaiPath = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
@@ -55,7 +55,7 @@ export async function requestOpenai(req: NextRequest) {
   };
 
   // #1815 try to refuse gpt4 request
-  if (DISABLE_GPT4 && req.body) {
+  if (enableGpt4 && req.body) {
     try {
       const clonedBody = await req.text();
       fetchOptions.body = clonedBody;

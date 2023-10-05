@@ -71,5 +71,6 @@ export async function auth(req: NextRequest) {
 
   return {
     error: false,
+    enableGpt4: leftChance.data.enableGpt4 > 0,
   };
 }
