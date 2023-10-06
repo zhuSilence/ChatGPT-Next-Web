@@ -44,7 +44,7 @@ async function handle(
       },
     );
   }
-
+  console.log("[OpenAI Route] req ", JSON.stringify(req));
   const authResult = await auth(req);
   console.log("[OpenAI Route] authResult ", authResult);
   if (authResult.error) {
