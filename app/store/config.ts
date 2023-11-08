@@ -1,4 +1,5 @@
 import { LLMModel } from "../client/api";
+import { isMacOS } from "../utils";
 import { getClientConfig } from "../config/client";
 import {
   DEFAULT_INPUT_TEMPLATE,
@@ -30,7 +31,7 @@ export enum Theme {
 export const DEFAULT_CONFIG = {
   lastUpdate: Date.now(), // timestamp, to merge state
 
-  submitKey: SubmitKey.Enter as SubmitKey,
+  submitKey: isMacOS() ? SubmitKey.MetaEnter : SubmitKey.CtrlEnter,
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
@@ -78,7 +79,7 @@ export function limitNumber(
   max: number,
   defaultValue: number,
 ) {
-  if (typeof x !== "number" || isNaN(x)) {
+  if (isNaN(x)) {
     return defaultValue;
   }
 
@@ -159,9 +160,9 @@ export const useAppConfig = createPersistStore(
         .customModels.split(",")
         .filter((v) => !!v && v.length > 0)
         .map((m) => ({ name: m, available: true }));
-
-      const models = get().models.concat(customModels);
-      return models;
+      const allModels = get().models.concat(customModels);
+      allModels.sort((a, b) => (a.name < b.name ? -1 : 1));
+      return allModels;
     },
   }),
   {
