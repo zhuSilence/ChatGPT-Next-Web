@@ -1,15 +1,8 @@
-import {
-  ImageModalConfigValidator,
-  ImageModelConfig,
-  ModalConfigValidator,
-  ModelConfig,
-} from "../store";
+import { ImageModelConfig } from "../store";
 
 import Locale from "../locales";
 import { InputRange } from "./input-range";
-import { Input, List, ListItem, Select } from "./ui-lib";
-import { ImageRequestSizeEnum } from "../api/openai/typing";
-import { CreateImageRequestSizeEnum } from "openai";
+import { ListItem, Select } from "./ui-lib";
 
 export function ImageModelConfigList(props: {
   imageModelConfig: ImageModelConfig;
@@ -44,7 +37,7 @@ export function ImageModelConfigList(props: {
             }
           }}
           min={"1"} // Convert the min value to a string
-          max={"10"} // Convert the max value to a string
+          max={"1"} // Convert the max value to a string
           step={"1"} // Convert the step value to a string
         />
       </ListItem>
@@ -52,20 +45,57 @@ export function ImageModelConfigList(props: {
         <Select
           value={props.imageModelConfig.size}
           onChange={(e) => {
-            const newSize = ImageModalConfigValidator.size(
-              e.currentTarget.value,
-            );
             props.updateConfig((config) => {
-              config.size = newSize;
+              config.size = e.currentTarget.value;
               return config;
             });
           }}
         >
-          {Object.values(CreateImageRequestSizeEnum).map((v) => (
-            <option value={v} key={v}>
-              {v}
-            </option>
-          ))}
+          <option value="1024x1024" key="1024x1024">
+            1024x1024
+          </option>
+          <option value="1024x1792" key="1024x1792">
+            1024x1792
+          </option>
+          <option value="1792x1024" key="1792x1024">
+            1792x1024
+          </option>
+        </Select>
+      </ListItem>
+      <ListItem title={Locale.Settings.ImageModel.Style}>
+        <Select
+          value={props.imageModelConfig.style}
+          onChange={(e) => {
+            props.updateConfig((config) => {
+              config.style = e.currentTarget.value;
+              return config;
+            });
+          }}
+        >
+          <option value="vivid" key="vivid">
+            vivid
+          </option>
+          <option value="natural" key="natural">
+            natural
+          </option>
+        </Select>
+      </ListItem>
+      <ListItem title={Locale.Settings.ImageModel.Quality}>
+        <Select
+          value={props.imageModelConfig.quality}
+          onChange={(e) => {
+            props.updateConfig((config) => {
+              config.quality = e.currentTarget.value;
+              return config;
+            });
+          }}
+        >
+          <option value="hd" key="hd">
+            hd
+          </option>
+          <option value="standard" key="standard">
+            standard
+          </option>
         </Select>
       </ListItem>
     </>

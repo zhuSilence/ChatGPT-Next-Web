@@ -9,16 +9,12 @@ import {
 } from "./store";
 import { showToast } from "./components/ui-lib";
 import { ACCESS_CODE_PREFIX, IMAGE_ERROR, IMAGE_PLACEHOLDER } from "./constant";
-import {
-  CreateImageRequest,
-  CreateImageRequestResponseFormatEnum,
-  CreateImageRequestSizeEnum,
-  ImagesResponse,
-  ImagesResponseDataInner,
-} from "openai";
 import { OpenaiPath } from "@/app/constant";
-import { ROLES } from "@/app/client/api";
 import { nanoid } from "nanoid";
+import { Images } from "openai/resources";
+import ImageGenerateParams = Images.ImageGenerateParams;
+import { ImagesResponse } from "openai/resources/images";
+import { Image } from "openai/src/resources/images";
 
 const TIME_OUT_MS = 60000;
 
@@ -157,32 +153,33 @@ export async function requestUsage() {
 
 const makeImageRequestParam = (
   prompt: string,
-  options?: Omit<CreateImageRequest, "prompt">,
-): CreateImageRequest => {
+  options?: Omit<ImageGenerateParams, "prompt">,
+): ImageGenerateParams => {
   // Set default values
-  const defaultOptions: Omit<CreateImageRequest, "prompt"> = {
+  // @ts-ignore
+  const defaultOptions: Omit<ImageGenerateParams, "prompt"> = {
     n: useAppConfig.getState().imageModelConfig.noOfImage,
-    response_format: CreateImageRequestResponseFormatEnum.Url,
+    response_format: "url",
     user: "default_user",
     size: useAppConfig.getState().imageModelConfig.size,
+    style: useAppConfig.getState().imageModelConfig.style,
+    quality: useAppConfig.getState().imageModelConfig.quality,
   };
 
   // Override default values with provided options
   const finalOptions = { ...defaultOptions, ...options };
 
-  const request: CreateImageRequest = {
+  return {
     prompt,
     ...finalOptions,
   };
-
-  return request;
 };
 export async function requestImage(
   keyword: string,
   options?: {
     onMessage: (
       message: string | null,
-      image: ImagesResponseDataInner[] | null,
+      image: Image[] | null,
       image_alt: string | null,
       done: boolean,
     ) => void;
@@ -213,7 +210,7 @@ export async function requestImage(
 
         clearTimeout(reqTimeoutId);
 
-        const finish = (images: ImagesResponseDataInner[]) => {
+        const finish = (images: Image[]) => {
           // let contentString = "";
           // images.forEach((img) => {
           //   if (img.url) {
@@ -245,7 +242,7 @@ export async function requestImage(
         );
       }
     }
-    fetchImageAndUpdateMessage();
+    await fetchImageAndUpdateMessage();
   }
 }
 

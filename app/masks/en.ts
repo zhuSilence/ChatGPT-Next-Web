@@ -26,7 +26,9 @@ export const EN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     lang: "en",
     builtin: true,
@@ -67,7 +69,9 @@ export const EN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-4",
@@ -108,7 +112,9 @@ export const EN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     lang: "en",
     builtin: true,
@@ -135,7 +141,9 @@ export const EN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-4",

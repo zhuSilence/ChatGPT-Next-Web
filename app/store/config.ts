@@ -12,7 +12,6 @@ import { createPersistStore } from "../utils/store";
 export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
 import { ImageRequestSizeEnum } from "../api/openai/typing";
 import { COMMAND_IMAGE } from "../constant";
-import { CreateImageRequestSizeEnum } from "openai";
 
 export enum SubmitKey {
   Enter = "Enter",
@@ -64,7 +63,9 @@ export const DEFAULT_CONFIG = {
   imageModelConfig: {
     noOfImage: 4,
     command: COMMAND_IMAGE,
-    size: "256x256" as ImageRequestSizeEnum,
+    size: "1024x1024",
+    style: "natural",
+    quality: "hd",
   },
 };
 
@@ -112,19 +113,6 @@ export const ModalConfigValidator = {
   },
 };
 
-export const ImageModalConfigValidator = {
-  size: (value: string): ImageRequestSizeEnum => {
-    const validSizes = Object.values(
-      CreateImageRequestSizeEnum,
-    ) as unknown as ImageRequestSizeEnum[];
-    if (validSizes.includes(value as ImageRequestSizeEnum)) {
-      return value as ImageRequestSizeEnum;
-    } else {
-      console.warn(`Invalid size: ${value}. Defaulting to "256x256".`);
-      return "256x256";
-    }
-  },
-};
 export const useAppConfig = createPersistStore(
   { ...DEFAULT_CONFIG },
   (set, get) => ({

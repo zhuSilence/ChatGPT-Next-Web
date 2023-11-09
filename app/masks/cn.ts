@@ -45,7 +45,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     lang: "cn",
     builtin: true,
@@ -66,7 +68,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -97,7 +101,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -128,7 +134,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -159,7 +167,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -190,7 +200,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -221,7 +233,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -252,7 +266,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -299,7 +315,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     lang: "cn",
     builtin: true,
@@ -320,7 +338,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -358,7 +378,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -396,7 +418,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -459,7 +483,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -506,7 +532,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     lang: "cn",
     builtin: true,
@@ -540,7 +568,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -570,7 +600,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -600,7 +632,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",
@@ -649,7 +683,9 @@ export const CN_MASKS: BuiltinMask[] = [
     imageModelConfig: {
       command: "/image",
       noOfImage: 1,
-      size: "256x256",
+      size: "1024x1024",
+      style: "vivid",
+      quality: "standard",
     },
     modelConfig: {
       model: "gpt-3.5-turbo",

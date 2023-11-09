@@ -293,10 +293,12 @@ const cn = {
     Model: "模型 (model)",
     ImageModel: {
       Title: "图片模型",
-      Model: "DALL-E模型",
+      Model: "DALL-E-3",
       Command: "生成图片指令",
-      NoOfImage: "图片生成次数限制",
+      NoOfImage: "图片生成次数限制（DALL-E-3只支持 1）",
       Size: "图片生成尺寸",
+      Style: "图片生成风格",
+      Quality: "图片生成质量",
     },
     Temperature: {
       Title: "随机性 (temperature)",

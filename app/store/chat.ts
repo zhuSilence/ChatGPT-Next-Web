@@ -1,16 +1,5 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
-import {
-  ImagesResponseDataInner,
-  type ChatCompletionResponseMessage,
-} from "openai";
-import {
-  ControllerPool,
-  requestImage,
-  requestChatStream,
-  requestWithPrompt,
-} from "../requests";
+import { Image } from "openai/src/resources/images";
+import { ControllerPool, requestImage } from "../requests";
 import { trimTopic } from "../utils";
 
 import Locale, { getLang } from "../locales";
@@ -33,7 +22,7 @@ import { createPersistStore } from "../utils/store";
 
 export type ChatMessage = RequestMessage & {
   date: string;
-  images?: ImagesResponseDataInner[];
+  images?: Image[];
   image_alt?: string;
   streaming?: boolean;
   isError?: boolean;
@@ -363,7 +352,7 @@ export const useChatStore = createPersistStore(
               imageModelConfig.command.toLowerCase().length,
             );
             console.log("keyword", keyword);
-            requestImage(keyword, {
+            await requestImage(keyword, {
               onMessage(content, images, image_alt, done) {
                 // stream response
                 if (done) {
@@ -409,7 +398,7 @@ export const useChatStore = createPersistStore(
               },
             });
           } else {
-            api.llm.chat({
+            await api.llm.chat({
               messages: sendMessages,
               config: { ...modelConfig, stream: true },
               onUpdate(message) {
