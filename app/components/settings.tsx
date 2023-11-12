@@ -51,10 +51,13 @@ import Locale, {
 import { copyToClipboard } from "../utils";
 import Link from "next/link";
 import {
+  Azure,
   OPENAI_BASE_URL,
   Path,
   RELEASE_URL,
   STORAGE_KEY,
+  ServiceProvider,
+  SlotID,
   UPDATE_URL,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
@@ -581,8 +584,16 @@ export function Settings() {
   const accessStore = useAccessStore();
   const shouldHideBalanceQuery = useMemo(() => {
     const isOpenAiUrl = accessStore.openaiUrl.includes(OPENAI_BASE_URL);
-    return accessStore.hideBalanceQuery || isOpenAiUrl;
-  }, [accessStore.hideBalanceQuery, accessStore.openaiUrl]);
+    return (
+      accessStore.hideBalanceQuery ||
+      isOpenAiUrl ||
+      accessStore.provider === ServiceProvider.Azure
+    );
+  }, [
+    accessStore.hideBalanceQuery,
+    accessStore.openaiUrl,
+    accessStore.provider,
+  ]);
 
   const usage = {
     used: updateStore.used,
@@ -858,16 +869,16 @@ export function Settings() {
           </ListItem>
         </List>
 
-        <List>
-          {showAccessCode ? (
+        <List id={SlotID.CustomModel}>
+          {showAccessCode && (
             <ListItem
-              title={Locale.Settings.AccessCode.Title}
-              subTitle={Locale.Settings.AccessCode.SubTitle}
+              title={Locale.Settings.Access.AccessCode.Title}
+              subTitle={Locale.Settings.Access.AccessCode.SubTitle}
             >
               <PasswordInput
                 value={accessStore.accessCode}
                 type="text"
-                placeholder={Locale.Settings.AccessCode.Placeholder}
+                placeholder={Locale.Settings.Access.AccessCode.Placeholder}
                 onChange={(e) => {
                   accessStore.update(
                     (access) => (access.accessCode = e.currentTarget.value),
@@ -875,8 +886,6 @@ export function Settings() {
                 }}
               />
             </ListItem>
-          ) : (
-            <></>
           )}
 
           {/*{!accessStore.hideUserApiKey ? (*/}
@@ -937,8 +946,8 @@ export function Settings() {
           {/*) : null}*/}
 
           <ListItem
-            title={Locale.Settings.CustomModel.Title}
-            subTitle={Locale.Settings.CustomModel.SubTitle}
+            title={Locale.Settings.Access.CustomModel.Title}
+            subTitle={Locale.Settings.Access.CustomModel.SubTitle}
           >
             <input
               type="text"
