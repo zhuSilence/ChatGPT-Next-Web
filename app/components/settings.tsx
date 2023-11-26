@@ -888,62 +888,176 @@ export function Settings() {
             </ListItem>
           )}
 
-          {/*{!accessStore.hideUserApiKey ? (*/}
-          {/*  <>*/}
-          {/*    <ListItem*/}
-          {/*      title={Locale.Settings.Endpoint.Title}*/}
-          {/*      subTitle={Locale.Settings.Endpoint.SubTitle}*/}
-          {/*    >*/}
-          {/*      <input*/}
-          {/*        type="text"*/}
-          {/*        value={accessStore.openaiUrl}*/}
-          {/*        placeholder="https://api.openai.com/"*/}
-          {/*        onChange={(e) =>*/}
-          {/*          accessStore.updateOpenAiUrl(e.currentTarget.value)*/}
-          {/*        }*/}
-          {/*      ></input>*/}
-          {/*    </ListItem>*/}
-          {/*    <ListItem*/}
-          {/*      title={Locale.Settings.Token.Title}*/}
-          {/*      subTitle={Locale.Settings.Token.SubTitle}*/}
-          {/*    >*/}
-          {/*      <PasswordInput*/}
-          {/*        value={accessStore.token}*/}
-          {/*        type="text"*/}
-          {/*        placeholder={Locale.Settings.Token.Placeholder}*/}
-          {/*        onChange={(e) => {*/}
-          {/*          accessStore.updateToken(e.currentTarget.value);*/}
-          {/*        }}*/}
-          {/*      />*/}
-          {/*    </ListItem>*/}
-          {/*  </>*/}
-          {/*) : null}*/}
+          {!accessStore.hideUserApiKey && (
+            <>
+              <ListItem
+                title={Locale.Settings.Access.CustomEndpoint.Title}
+                subTitle={Locale.Settings.Access.CustomEndpoint.SubTitle}
+              >
+                <input
+                  type="checkbox"
+                  checked={accessStore.useCustomConfig}
+                  onChange={(e) =>
+                    accessStore.update(
+                      (access) =>
+                        (access.useCustomConfig = e.currentTarget.checked),
+                    )
+                  }
+                ></input>
+              </ListItem>
+              {accessStore.useCustomConfig && (
+                <>
+                  <ListItem
+                    title={Locale.Settings.Access.Provider.Title}
+                    subTitle={Locale.Settings.Access.Provider.SubTitle}
+                  >
+                    <Select
+                      value={accessStore.provider}
+                      onChange={(e) => {
+                        accessStore.update(
+                          (access) =>
+                            (access.provider = e.target
+                              .value as ServiceProvider),
+                        );
+                      }}
+                    >
+                      {Object.entries(ServiceProvider).map(([k, v]) => (
+                        <option value={v} key={k}>
+                          {k}
+                        </option>
+                      ))}
+                    </Select>
+                  </ListItem>
 
-          {/*{!accessStore.hideBalanceQuery ? (*/}
-          {/*  <ListItem*/}
-          {/*    title={Locale.Settings.Usage.Title}*/}
-          {/*    subTitle={*/}
-          {/*      showUsage*/}
-          {/*        ? loadingUsage*/}
-          {/*          ? Locale.Settings.Usage.IsChecking*/}
-          {/*          : Locale.Settings.Usage.SubTitle(*/}
-          {/*              usage?.used ?? "[?]",*/}
-          {/*              usage?.subscription ?? "[?]",*/}
-          {/*            )*/}
-          {/*        : Locale.Settings.Usage.NoAccess*/}
-          {/*    }*/}
-          {/*  >*/}
-          {/*    {!showUsage || loadingUsage ? (*/}
-          {/*      <div />*/}
-          {/*    ) : (*/}
-          {/*      <IconButton*/}
-          {/*        icon={<ResetIcon></ResetIcon>}*/}
-          {/*        text={Locale.Settings.Usage.Check}*/}
-          {/*        onClick={() => checkUsage(true)}*/}
-          {/*      />*/}
-          {/*    )}*/}
-          {/*  </ListItem>*/}
-          {/*) : null}*/}
+                  {accessStore.provider === "OpenAI" ? (
+                    <>
+                      <ListItem
+                        title={Locale.Settings.Access.OpenAI.Endpoint.Title}
+                        subTitle={
+                          Locale.Settings.Access.OpenAI.Endpoint.SubTitle
+                        }
+                      >
+                        <input
+                          type="text"
+                          value={accessStore.openaiUrl}
+                          placeholder={OPENAI_BASE_URL}
+                          onChange={(e) =>
+                            accessStore.update(
+                              (access) =>
+                                (access.openaiUrl = e.currentTarget.value),
+                            )
+                          }
+                        ></input>
+                      </ListItem>
+                      <ListItem
+                        title={Locale.Settings.Access.OpenAI.ApiKey.Title}
+                        subTitle={Locale.Settings.Access.OpenAI.ApiKey.SubTitle}
+                      >
+                        <PasswordInput
+                          value={accessStore.openaiApiKey}
+                          type="text"
+                          placeholder={
+                            Locale.Settings.Access.OpenAI.ApiKey.Placeholder
+                          }
+                          onChange={(e) => {
+                            accessStore.update(
+                              (access) =>
+                                (access.openaiApiKey = e.currentTarget.value),
+                            );
+                          }}
+                        />
+                      </ListItem>
+                    </>
+                  ) : (
+                    <>
+                      <ListItem
+                        title={Locale.Settings.Access.Azure.Endpoint.Title}
+                        subTitle={
+                          Locale.Settings.Access.Azure.Endpoint.SubTitle +
+                          Azure.ExampleEndpoint
+                        }
+                      >
+                        <input
+                          type="text"
+                          value={accessStore.azureUrl}
+                          placeholder={Azure.ExampleEndpoint}
+                          onChange={(e) =>
+                            accessStore.update(
+                              (access) =>
+                                (access.azureUrl = e.currentTarget.value),
+                            )
+                          }
+                        ></input>
+                      </ListItem>
+                      <ListItem
+                        title={Locale.Settings.Access.Azure.ApiKey.Title}
+                        subTitle={Locale.Settings.Access.Azure.ApiKey.SubTitle}
+                      >
+                        <PasswordInput
+                          value={accessStore.azureApiKey}
+                          type="text"
+                          placeholder={
+                            Locale.Settings.Access.Azure.ApiKey.Placeholder
+                          }
+                          onChange={(e) => {
+                            accessStore.update(
+                              (access) =>
+                                (access.azureApiKey = e.currentTarget.value),
+                            );
+                          }}
+                        />
+                      </ListItem>
+                      <ListItem
+                        title={Locale.Settings.Access.Azure.ApiVerion.Title}
+                        subTitle={
+                          Locale.Settings.Access.Azure.ApiVerion.SubTitle
+                        }
+                      >
+                        <input
+                          type="text"
+                          value={accessStore.azureApiVersion}
+                          placeholder="2023-08-01-preview"
+                          onChange={(e) =>
+                            accessStore.update(
+                              (access) =>
+                                (access.azureApiVersion =
+                                  e.currentTarget.value),
+                            )
+                          }
+                        ></input>
+                      </ListItem>
+                    </>
+                  )}
+                </>
+              )}
+            </>
+          )}
+
+          {!shouldHideBalanceQuery && !clientConfig?.isApp ? (
+            <ListItem
+              title={Locale.Settings.Usage.Title}
+              subTitle={
+                showUsage
+                  ? loadingUsage
+                    ? Locale.Settings.Usage.IsChecking
+                    : Locale.Settings.Usage.SubTitle(
+                        usage?.used ?? "[?]",
+                        usage?.subscription ?? "[?]",
+                      )
+                  : Locale.Settings.Usage.NoAccess
+              }
+            >
+              {!showUsage || loadingUsage ? (
+                <div />
+              ) : (
+                <IconButton
+                  icon={<ResetIcon></ResetIcon>}
+                  text={Locale.Settings.Usage.Check}
+                  onClick={() => checkUsage(true)}
+                />
+              )}
+            </ListItem>
+          ) : null}
 
           <ListItem
             title={Locale.Settings.Access.CustomModel.Title}
