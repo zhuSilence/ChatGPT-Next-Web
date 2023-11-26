@@ -4,7 +4,7 @@ import {
   ServiceProvider,
   StoreKey,
 } from "../constant";
-import { ACCESS_CODE_CHECK } from "../constant";
+import { DEFAULT_MODELS, ACCESS_CODE_CHECK } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
