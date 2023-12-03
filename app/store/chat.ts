@@ -1,5 +1,5 @@
 import { Image } from "openai/src/resources/images";
-import { ControllerPool, requestImage } from "../requests";
+import { ControllerPool } from "../requests";
 import { trimTopic } from "../utils";
 
 import Locale, { getLang } from "../locales";

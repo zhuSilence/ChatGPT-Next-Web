@@ -91,3 +91,41 @@ export async function requestChat(
     console.error("[Request Chat] ", error, res.body);
   }
 }
+
+// To store message streaming controller
+export const ControllerPool = {
+  controllers: {} as Record<string, AbortController>,
+
+  addController(
+    sessionIndex: string,
+    messageId: string,
+    controller: AbortController,
+  ) {
+    const key = this.key(sessionIndex, messageId);
+    this.controllers[key] = controller;
+    return key;
+  },
+
+  stop(sessionIndex: string, messageId: string) {
+    const key = this.key(sessionIndex, messageId);
+    const controller = this.controllers[key];
+    controller?.abort();
+  },
+
+  stopAll() {
+    Object.values(this.controllers).forEach((v) => v.abort());
+  },
+
+  hasPending() {
+    return Object.values(this.controllers).length > 0;
+  },
+
+  remove(sessionIndex: string, messageId: string) {
+    const key = this.key(sessionIndex, messageId);
+    delete this.controllers[key];
+  },
+
+  key(sessionIndex: string, messageIndex: string) {
+    return `${sessionIndex},${messageIndex}`;
+  },
+};
