@@ -263,6 +263,7 @@ export class ChatGPTApi implements LLMApi {
       const controller = new AbortController();
       const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
       options?.onController?.(controller);
+      let imagePath = this.path(OpenaiPath.ImagePath);
 
       async function fetchImageAndUpdateMessage() {
         try {
@@ -271,7 +272,7 @@ export class ChatGPTApi implements LLMApi {
           const sanitizedMessage = keyword.replace(/[\n\r]+/g, " ");
           const req = makeImageRequestParam(sanitizedMessage);
 
-          const res = await requestOpenaiClient(OpenaiPath.ImagePath)(req);
+          const res = await requestOpenaiClient(imagePath)(req);
 
           clearTimeout(reqTimeoutId);
 
