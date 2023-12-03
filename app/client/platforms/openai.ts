@@ -2,13 +2,22 @@ import {
   ApiPath,
   DEFAULT_API_HOST,
   DEFAULT_MODELS,
+  IMAGE_ERROR,
+  IMAGE_PLACEHOLDER,
   OpenaiPath,
   REQUEST_TIMEOUT_MS,
   ServiceProvider,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
-import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
+import {
+  ChatOptions,
+  DrawOptions,
+  getHeaders,
+  LLMApi,
+  LLMModel,
+  LLMUsage,
+} from "../api";
 import Locale from "../../locales";
 import {
   EventStreamContentType,
@@ -17,6 +26,13 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
+import { Image } from "openai/src/resources/images";
+import { ImagesResponse } from "openai/resources/images";
+import { requestOpenaiClient } from "@/app/requests";
+import OpenAI from "openai";
+import ImageGenerateParams = OpenAI.ImageGenerateParams;
+
+const TIME_OUT_MS = 60000;
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -234,6 +250,66 @@ export class ChatGPTApi implements LLMApi {
       options.onError?.(e as Error);
     }
   }
+
+  async draw(keyword: string, options: DrawOptions): Promise<void> {
+    if (keyword.length < 1) {
+      options?.onMessage(
+        "Please enter a keyword after `/image`",
+        null,
+        null,
+        true,
+      );
+    } else {
+      const controller = new AbortController();
+      const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
+      options?.onController?.(controller);
+
+      async function fetchImageAndUpdateMessage() {
+        try {
+          options?.onMessage(null, null, IMAGE_PLACEHOLDER, false);
+
+          const sanitizedMessage = keyword.replace(/[\n\r]+/g, " ");
+          const req = makeImageRequestParam(sanitizedMessage);
+
+          const res = await requestOpenaiClient(OpenaiPath.ImagePath)(req);
+
+          clearTimeout(reqTimeoutId);
+
+          const finish = (images: Image[]) => {
+            // let contentString = "";
+            // images.forEach((img) => {
+            //   if (img.url) {
+            //     contentString += "![](" + img.url + ") ";
+            //   }
+            // });
+            options?.onMessage(" ", images, null, true);
+            controller.abort();
+          };
+
+          if (res.ok) {
+            const responseData = (await res.json()) as ImagesResponse;
+            finish(responseData.data);
+          } else if (res.status === 401) {
+            console.error("Unauthorized");
+            options?.onError(new Error("Unauthorized"), res.status);
+          } else {
+            console.error("Stream Error", res.body);
+            options?.onError(new Error("Stream Error"), res.status);
+          }
+        } catch (err) {
+          console.error("NetWork Error", err);
+          options?.onError(err as Error);
+          options?.onMessage(
+            "Image generation has been cancelled.",
+            null,
+            IMAGE_ERROR,
+            true,
+          );
+        }
+      }
+      await fetchImageAndUpdateMessage();
+    }
+  }
   async usage() {
     const formatDate = (d: Date) =>
       `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d
@@ -327,3 +403,27 @@ export class ChatGPTApi implements LLMApi {
   }
 }
 export { OpenaiPath };
+
+const makeImageRequestParam = (
+  prompt: string,
+  options?: Omit<ImageGenerateParams, "prompt">,
+): ImageGenerateParams => {
+  // Set default values
+  // @ts-ignore
+  const defaultOptions: Omit<ImageGenerateParams, "prompt"> = {
+    n: useAppConfig.getState().imageModelConfig.noOfImage,
+    response_format: "url",
+    user: "default_user",
+    size: useAppConfig.getState().imageModelConfig.size,
+    style: useAppConfig.getState().imageModelConfig.style,
+    quality: useAppConfig.getState().imageModelConfig.quality,
+  };
+
+  // Override default values with provided options
+  const finalOptions = { ...defaultOptions, ...options };
+
+  return {
+    prompt,
+    ...finalOptions,
+  };
+};

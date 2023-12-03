@@ -325,7 +325,7 @@ export const useChatStore = createPersistStore(
               imageModelConfig.command.toLowerCase().length,
             );
             console.log("keyword", keyword);
-            await requestImage(keyword, {
+            await api.llm.draw(keyword, {
               onMessage(content, images, image_alt, done) {
                 // stream response
                 if (done) {

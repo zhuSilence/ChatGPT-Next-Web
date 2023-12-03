@@ -2,6 +2,7 @@ import { getClientConfig } from "../config/client";
 import { ACCESS_CODE_PREFIX, Azure, ServiceProvider } from "../constant";
 import { ChatMessage, ModelType, useAccessStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
+import { Image } from "openai/src/resources/images";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -32,6 +33,19 @@ export interface ChatOptions {
   onError?: (err: Error) => void;
   onController?: (controller: AbortController) => void;
 }
+export interface DrawOptions {
+  config?: LLMConfig;
+  onMessage: (
+    message: string | null,
+    image: Image[] | null,
+    image_alt: string | null,
+    done: boolean,
+  ) => void;
+  onUpdate?: (message: string, chunk: string) => void;
+  onFinish?: (message: string) => void;
+  onError: (error: Error, statusCode?: number) => void;
+  onController?: (controller: AbortController) => void;
+}
 
 export interface LLMUsage {
   used: number;
@@ -45,6 +59,7 @@ export interface LLMModel {
 
 export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
+  abstract draw(keyword: string, options: DrawOptions): Promise<void>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
 }
