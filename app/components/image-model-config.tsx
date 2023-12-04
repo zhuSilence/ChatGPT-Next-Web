@@ -28,7 +28,7 @@ export function ImageModelConfigList(props: {
         <InputRange
           value={props.imageModelConfig.noOfImage.toString()} // Keep the value as a string
           onChange={(e) => {
-            const newValue = parseInt(e.currentTarget.value, 4); // Parse the value as an integer
+            const newValue = 1; // Parse the value as an integer
             if (!isNaN(newValue)) {
               props.updateConfig((config) => {
                 config.noOfImage = newValue; // Assign the parsed value

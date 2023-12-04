@@ -415,6 +415,7 @@ const makeImageRequestParam = (
     n: useAppConfig.getState().imageModelConfig.noOfImage,
     response_format: "url",
     user: "default_user",
+    model: "dall-e-3",
     size: useAppConfig.getState().imageModelConfig.size,
     style: useAppConfig.getState().imageModelConfig.style,
     quality: useAppConfig.getState().imageModelConfig.quality,

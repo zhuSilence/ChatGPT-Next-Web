@@ -61,7 +61,7 @@ export const DEFAULT_CONFIG = {
     template: DEFAULT_INPUT_TEMPLATE,
   },
   imageModelConfig: {
-    noOfImage: 4,
+    noOfImage: 1,
     command: COMMAND_IMAGE,
     size: "1024x1024",
     style: "natural",
