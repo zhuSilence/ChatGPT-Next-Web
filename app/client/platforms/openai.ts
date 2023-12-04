@@ -412,7 +412,7 @@ const makeImageRequestParam = (
   // Set default values
   // @ts-ignore
   const defaultOptions: Omit<ImageGenerateParams, "prompt"> = {
-    n: useAppConfig.getState().imageModelConfig.noOfImage,
+    n: 1,
     response_format: "url",
     user: "default_user",
     model: "dall-e-3",
