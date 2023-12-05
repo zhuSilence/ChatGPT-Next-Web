@@ -10,7 +10,6 @@ import {
 import { createPersistStore } from "../utils/store";
 
 export type ModelType = (typeof DEFAULT_MODELS)[number]["name"];
-import { ImageRequestSizeEnum } from "../api/openai/typing";
 import { COMMAND_IMAGE } from "../constant";
 
 export enum SubmitKey {

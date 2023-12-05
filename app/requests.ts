@@ -1,4 +1,3 @@
-import type { ChatRequest, ChatResponse } from "./api/openai/typing";
 import {
   ChatMessage,
   ModelType,
@@ -9,37 +8,6 @@ import {
 import { ACCESS_CODE_PREFIX } from "./constant";
 
 const TIME_OUT_MS = 60000;
-
-const makeRequestParam = (
-  messages: ChatMessage[],
-  options?: {
-    stream?: boolean;
-    overrideModel?: ModelType;
-  },
-): ChatRequest => {
-  let sendMessages = messages.map((v) => ({
-    role: v.role,
-    content: v.content,
-  }));
-
-  const modelConfig = {
-    ...useAppConfig.getState().modelConfig,
-    ...useChatStore.getState().currentSession().mask.modelConfig,
-  };
-
-  // override model config
-  if (options?.overrideModel) {
-    modelConfig.model = options.overrideModel;
-  }
-
-  return {
-    messages: sendMessages,
-    stream: options?.stream,
-    model: modelConfig.model,
-    temperature: modelConfig.temperature,
-    presence_penalty: modelConfig.presence_penalty,
-  };
-};
 
 export function getHeaders() {
   const accessStore = useAccessStore.getState();
@@ -70,25 +38,6 @@ export function requestOpenaiClient(url: string) {
       body: body && JSON.stringify(body),
       headers: getHeaders(),
     });
-}
-
-export async function requestChat(
-  messages: ChatMessage[],
-  options?: {
-    model?: ModelType;
-  },
-) {
-  const req: ChatRequest = makeRequestParam(messages, {
-    overrideModel: options?.model,
-  });
-
-  const res = await requestOpenaiClient("v1/chat/completions")(req);
-
-  try {
-    return (await res.json()) as ChatResponse;
-  } catch (error) {
-    console.error("[Request Chat] ", error, res.body);
-  }
 }
 
 // To store message streaming controller

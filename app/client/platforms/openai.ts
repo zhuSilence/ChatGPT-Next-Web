@@ -416,9 +416,9 @@ const makeImageRequestParam = (
     response_format: "url",
     user: "default_user",
     model: "dall-e-3",
-    size: useAppConfig.getState().imageModelConfig.size,
-    style: useAppConfig.getState().imageModelConfig.style,
-    quality: useAppConfig.getState().imageModelConfig.quality,
+    size: useAppConfig.getState().imageModelConfig.size as "1024x1792",
+    style: useAppConfig.getState().imageModelConfig.style as "natural",
+    quality: useAppConfig.getState().imageModelConfig.quality as "standard",
   };
 
   // Override default values with provided options
