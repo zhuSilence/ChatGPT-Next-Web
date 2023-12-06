@@ -1,6 +1,6 @@
-import Image from "openai";
 import React, { FC } from "react";
 import styles from "./imageList.module.scss";
+import { Image } from "openai/src/resources/images";
 
 interface ImageListProps {
   images?: Image[];
