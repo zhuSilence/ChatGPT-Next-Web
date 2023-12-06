@@ -335,6 +335,8 @@ const en: LocaleType = {
       Command: "Generate Image Command",
       NoOfImage: "Image Generation Limit",
       Size: "Image Generation Size",
+      Style: "Image Generation Style",
+      Quality: "Image Generation Quality",
     },
     Temperature: {
       Title: "Temperature",

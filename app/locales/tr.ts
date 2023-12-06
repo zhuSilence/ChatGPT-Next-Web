@@ -142,6 +142,8 @@ const tr: PartialLocaleType = {
       Command: "Resim Oluşturma Komutu",
       NoOfImage: "Resim Oluşturma Limiti",
       Size: "Resim Oluşturma Boyutu",
+      Style: "Image Generation Style",
+      Quality: "Image Generation Quality",
     },
     Temperature: {
       Title: "Gerçeklik",

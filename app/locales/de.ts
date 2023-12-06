@@ -141,6 +141,8 @@ const de: PartialLocaleType = {
       Command: "Bildgenerierungsbefehl",
       NoOfImage: "Bildgenerierungslimit",
       Size: "Bildgenerierungsgröße",
+      Style: "Image Generation Style",
+      Quality: "Image Generation Quality",
     },
     Temperature: {
       Title: "Temperature", //Temperatur

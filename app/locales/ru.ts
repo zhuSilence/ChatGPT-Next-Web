@@ -143,6 +143,8 @@ const ru: PartialLocaleType = {
       Command: "Команда генерации изображений",
       NoOfImage: "Лимит генерации изображений",
       Size: "Размер генерируемого изображения",
+      Style: "Image Generation Style",
+      Quality: "Image Generation Quality",
     },
     Temperature: {
       Title: "Температура",

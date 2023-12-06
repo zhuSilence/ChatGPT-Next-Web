@@ -250,6 +250,15 @@ const id: PartialLocaleType = {
     },
 
     Model: "Model",
+    ImageModel: {
+      Title: "Image Model",
+      Model: "DALL-E Model",
+      Command: "Generate Image Command",
+      NoOfImage: "Image Generation Limit",
+      Size: "Image Generation Size",
+      Style: "Image Generation Style",
+      Quality: "Image Generation Quality",
+    },
     Temperature: {
       Title: "Suhu",
       SubTitle: "Semakin tinggi nilainya, semakin acak keluarannya",

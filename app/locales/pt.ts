@@ -323,6 +323,15 @@ const pt: PartialLocaleType = {
     },
 
     Model: "Modelo",
+    ImageModel: {
+      Title: "Image Model",
+      Model: "DALL-E Model",
+      Command: "Generate Image Command",
+      NoOfImage: "Image Generation Limit",
+      Size: "Image Generation Size",
+      Style: "Image Generation Style",
+      Quality: "Image Generation Quality",
+    },
     Temperature: {
       Title: "Temperatura",
       SubTitle: "Um valor maior torna a saída mais aleatória",

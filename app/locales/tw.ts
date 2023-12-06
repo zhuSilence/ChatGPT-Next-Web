@@ -141,6 +141,8 @@ const tw: PartialLocaleType = {
       Command: "生成圖片指令",
       NoOfImage: "圖片生成次數限制",
       Size: "圖片生成尺寸",
+      Style: "Image Generation Style",
+      Quality: "Image Generation Quality",
     },
     Temperature: {
       Title: "隨機性 (temperature)",

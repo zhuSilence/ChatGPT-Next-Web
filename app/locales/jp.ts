@@ -165,6 +165,8 @@ const jp: PartialLocaleType = {
       Command: "画像生成コマンド",
       NoOfImage: "画像生成回数制限",
       Size: "画像生成サイズ",
+      Style: "Image Generation Style",
+      Quality: "Image Generation Quality",
     },
     Temperature: {
       Title: "ランダム性 (temperature)",

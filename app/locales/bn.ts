@@ -211,6 +211,15 @@ const bn: PartialLocaleType = {
     },
 
     Model: "মডেল",
+    ImageModel: {
+      Title: "Image Model",
+      Model: "DALL-E Model",
+      Command: "Generate Image Command",
+      NoOfImage: "Image Generation Limit",
+      Size: "Image Generation Size",
+      Style: "Image Generation Style",
+      Quality: "Image Generation Quality",
+    },
     Temperature: {
       Title: "তাপমাত্রা",
       SubTitle: "আরতি মান বেশি করলে বেশি এলোমেলো আউটপুট হবে",

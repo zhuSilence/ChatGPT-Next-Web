@@ -142,6 +142,8 @@ const cs: PartialLocaleType = {
       Command: "Příkaz pro generování obrázků",
       NoOfImage: "Limit počtu generovaných obrázků",
       Size: "Velikost generovaného obrázku",
+      Style: "Image Generation Style",
+      Quality: "Image Generation Quality",
     },
     Temperature: {
       Title: "Teplota",

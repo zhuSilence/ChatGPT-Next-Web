@@ -141,6 +141,8 @@ const vi: PartialLocaleType = {
       Command: "Lệnh tạo hình ảnh",
       NoOfImage: "Giới hạn số lượng hình ảnh tạo ra",
       Size: "Kích thước hình ảnh được tạo ra",
+      Style: "Image Generation Style",
+      Quality: "Image Generation Quality",
     },
     Temperature: {
       Title: "Tính ngẫu nhiên (temperature)",

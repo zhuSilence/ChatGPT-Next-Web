@@ -142,6 +142,8 @@ const es: PartialLocaleType = {
       Command: "Comando de generación de imágenes",
       NoOfImage: "Límite de generación de imágenes",
       Size: "Tamaño de generación de imagen",
+      Style: "Image Generation Style",
+      Quality: "Image Generation Quality",
     },
     Temperature: {
       Title: "Temperatura",
