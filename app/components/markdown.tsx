@@ -162,7 +162,7 @@ export const MarkdownContent = React.memo(_MarkDownContent);
 export function Markdown(
   props: {
     content: string;
-    images?: Image[];
+    images?: string[];
     image_alt?: string;
     loading?: boolean;
     fontSize?: number;

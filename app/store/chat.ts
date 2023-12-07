@@ -22,7 +22,7 @@ import { createPersistStore } from "../utils/store";
 
 export type ChatMessage = RequestMessage & {
   date: string;
-  images?: Image[];
+  images?: string[];
   image_alt?: string;
   streaming?: boolean;
   isError?: boolean;

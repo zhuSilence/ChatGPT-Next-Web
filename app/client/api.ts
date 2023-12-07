@@ -37,7 +37,7 @@ export interface DrawOptions {
   config?: LLMConfig;
   onMessage: (
     message: string | null,
-    image: Image[] | null,
+    image: string[] | null,
     image_alt: string | null,
     done: boolean,
   ) => void;

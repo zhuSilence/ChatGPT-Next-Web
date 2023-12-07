@@ -26,11 +26,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { makeAzurePath } from "@/app/azure";
-import { Image } from "openai/src/resources/images";
-import { ImagesResponse } from "openai/resources/images";
 import { requestOpenaiClient } from "@/app/requests";
-import OpenAI from "openai";
-import ImageGenerateParams = OpenAI.ImageGenerateParams;
 
 const TIME_OUT_MS = 60000;
 
@@ -251,6 +247,9 @@ export class ChatGPTApi implements LLMApi {
     }
   }
 
+  extractImageMessage(res: any) {
+    return res.data?.at(0)?.url ?? "";
+  }
   async draw(keyword: string, options: DrawOptions): Promise<void> {
     if (keyword.length < 1) {
       options?.onMessage(
@@ -264,7 +263,7 @@ export class ChatGPTApi implements LLMApi {
       const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
       options?.onController?.(controller);
       let imagePath = this.path(OpenaiPath.ImagePath);
-
+      let that = this;
       async function fetchImageAndUpdateMessage() {
         try {
           options?.onMessage(null, null, IMAGE_PLACEHOLDER, false);
@@ -276,7 +275,7 @@ export class ChatGPTApi implements LLMApi {
 
           clearTimeout(reqTimeoutId);
 
-          const finish = (images: Image[]) => {
+          const finish = (images: string[]) => {
             // let contentString = "";
             // images.forEach((img) => {
             //   if (img.url) {
@@ -288,8 +287,11 @@ export class ChatGPTApi implements LLMApi {
           };
 
           if (res.ok) {
-            const responseData = (await res.json()) as ImagesResponse;
-            finish(responseData.data);
+            const resJson = await res.json();
+            const url = that.extractImageMessage(resJson);
+            const images = [];
+            images.push(url);
+            finish(images);
           } else if (res.status === 401) {
             console.error("Unauthorized");
             options?.onError(new Error("Unauthorized"), res.status);
@@ -405,13 +407,9 @@ export class ChatGPTApi implements LLMApi {
 }
 export { OpenaiPath };
 
-const makeImageRequestParam = (
-  prompt: string,
-  options?: Omit<ImageGenerateParams, "prompt">,
-): ImageGenerateParams => {
+const makeImageRequestParam = (prompt: string, options?: {}) => {
   // Set default values
-  // @ts-ignore
-  const defaultOptions: Omit<ImageGenerateParams, "prompt"> = {
+  const defaultOptions = {
     n: 1,
     response_format: "url",
     user: "default_user",
