@@ -1,4 +1,3 @@
-import { Image } from "openai/src/resources/images";
 import { ControllerPool } from "../requests";
 import { trimTopic } from "../utils";
 
