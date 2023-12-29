@@ -52,6 +52,7 @@ import { copyToClipboard } from "../utils";
 import Link from "next/link";
 import {
   Azure,
+  Google,
   OPENAI_BASE_URL,
   Path,
   RELEASE_URL,
@@ -584,6 +585,7 @@ export function Settings() {
   const accessStore = useAccessStore();
   const shouldHideBalanceQuery = useMemo(() => {
     const isOpenAiUrl = accessStore.openaiUrl.includes(OPENAI_BASE_URL);
+
     return (
       accessStore.hideBalanceQuery ||
       isOpenAiUrl ||

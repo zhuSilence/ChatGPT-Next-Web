@@ -1,7 +1,11 @@
 import { NextRequest } from "next/server";
 import { getServerSideConfig } from "../config/server";
 import md5 from "spark-md5";
-import { ACCESS_CODE_CHECK, ACCESS_CODE_PREFIX } from "../constant";
+import {
+  ACCESS_CODE_CHECK,
+  ACCESS_CODE_PREFIX,
+  ModelProvider,
+} from "../constant";
 
 function getIP(req: NextRequest) {
   let ip = req.ip ?? req.headers.get("x-real-ip");
@@ -16,15 +20,15 @@ function getIP(req: NextRequest) {
 
 function parseApiKey(bearToken: string) {
   const token = bearToken.trim().replaceAll("Bearer ", "").trim();
-  const isOpenAiKey = !token.startsWith(ACCESS_CODE_PREFIX);
+  const isApiKey = !token.startsWith(ACCESS_CODE_PREFIX);
 
   return {
-    accessCode: isOpenAiKey ? "" : token.slice(ACCESS_CODE_PREFIX.length),
-    apiKey: isOpenAiKey ? token : "",
+    accessCode: isApiKey ? "" : token.slice(ACCESS_CODE_PREFIX.length),
+    apiKey: isApiKey ? token : "",
   };
 }
 
-export async function auth(req: NextRequest) {
+export function auth(req: NextRequest, modelProvider: ModelProvider) {
   const authToken = req.headers.get("Authorization") ?? "";
 
   // check if it is openai api key or user token

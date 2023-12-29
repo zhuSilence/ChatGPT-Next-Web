@@ -1,6 +1,6 @@
 import { type OpenAIListModelResponse } from "@/app/client/platforms/openai";
 import { getServerSideConfig } from "@/app/config/server";
-import { OpenaiPath } from "@/app/constant";
+import { ModelProvider, OpenaiPath } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../auth";
@@ -45,7 +45,7 @@ async function handle(
     );
   }
   console.log("[OpenAI Route] req ", JSON.stringify(req));
-  const authResult = await auth(req);
+  const authResult = await auth(req, ModelProvider.GPT);
   console.log("[OpenAI Route] authResult ", authResult);
   if (authResult.error) {
     return NextResponse.json(authResult, {
