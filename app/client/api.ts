@@ -7,7 +7,6 @@ import {
 } from "../constant";
 import { ChatMessage, ModelType, useAccessStore, useChatStore } from "../store";
 import { ChatGPTApi } from "./platforms/openai";
-import { Image } from "openai/src/resources/images";
 
 import { GeminiProApi } from "./platforms/google";
 export const ROLES = ["system", "user", "assistant"] as const;
