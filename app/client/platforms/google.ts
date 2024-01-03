@@ -1,5 +1,12 @@
 import { Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
-import { ChatOptions, getHeaders, LLMApi, LLMModel, LLMUsage } from "../api";
+import {
+  ChatOptions,
+  DrawOptions,
+  getHeaders,
+  LLMApi,
+  LLMModel,
+  LLMUsage,
+} from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import {
   EventStreamContentType,
@@ -9,7 +16,11 @@ import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import Locale from "../../locales";
 import { getServerSideConfig } from "@/app/config/server";
+
 export class GeminiProApi implements LLMApi {
+  draw(keyword: string, options: DrawOptions): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
   extractMessage(res: any) {
     console.log("[Response] gemini-pro response: ", res);
 

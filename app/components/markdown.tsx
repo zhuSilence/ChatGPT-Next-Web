@@ -18,7 +18,6 @@ import ImagePlaceHolder from "../icons/image-placeholder.svg";
 import ImageError from "../icons/image-error.svg";
 import { IMAGE_PLACEHOLDER } from "../constant";
 import ImageList from "./imageList";
-import { Image } from "openai/src/resources/images";
 
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
