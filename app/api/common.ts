@@ -12,13 +12,7 @@ export async function requestOpenai(req: NextRequest, enableGpt4: boolean) {
   var authValue,
     authHeaderName = "";
   if (serverConfig.isAzure) {
-    authValue =
-      req.headers
-        .get("Authorization")
-        ?.trim()
-        .replaceAll("Bearer ", "")
-        .trim() ?? "";
-
+    authValue = serverConfig.azureApiKey;
     authHeaderName = "api-key";
   } else {
     authValue = req.headers.get("Authorization") ?? "";
