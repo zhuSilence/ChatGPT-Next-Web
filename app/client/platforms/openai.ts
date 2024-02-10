@@ -48,6 +48,7 @@ export class ChatGPTApi implements LLMApi {
     const isAzure = accessStore.provider === ServiceProvider.Azure;
 
     if (isAzure && !accessStore.isValidAzure()) {
+      console.log(accessStore);
       throw Error(
         "incomplete azure config, please check it in your settings page",
       );
