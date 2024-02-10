@@ -20,9 +20,9 @@ const DEFAULT_OPENAI_URL =
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "default",
-  useCustomConfig: false,
+  useCustomConfig: true,
 
-  provider: ServiceProvider.Azure,
+  provider: ServiceProvider.OpenAI,
 
   // openai
   openaiUrl: DEFAULT_OPENAI_URL,
