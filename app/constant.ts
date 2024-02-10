@@ -17,8 +17,7 @@ export enum ACCESS_CODE_CHECK {
   REDUCE_CHANCE = "https://yuandifly.com/wx/wxAuth/reduceChance?appid=wxab37bbbf257a9041&openId=",
 }
 
-export const DEFAULT_CORS_HOST = "https://a.nextweb.fun";
-export const DEFAULT_API_HOST = `${DEFAULT_CORS_HOST}/api/proxy`;
+export const DEFAULT_API_HOST = "https://api.nextchat.dev";
 export const OPENAI_BASE_URL = "https://api.openai.com";
 
 export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
@@ -105,7 +104,7 @@ export const Google = {
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
 export const DEFAULT_SYSTEM_TEMPLATE = `
-You are ChatGPT, a large language model trained by OpenAI.
+You are ChatGPT, a large language model trained by {{ServiceProvider}}.
 Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
 Current time: {{time}}
@@ -117,8 +116,13 @@ export const SUMMARIZE_MODEL = "gpt-3.5-turbo";
 
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2021-09",
+  "gpt-4-turbo-preview": "2023-04",
   "gpt-4-1106-preview": "2023-04",
+  "gpt-4-0125-preview": "2023-04",
   "gpt-4-vision-preview": "2023-04",
+  // After improvements,
+  // it's now easier to add "KnowledgeCutOffDate" instead of stupid hardcoding it, as was done previously.
+  "gemini-pro": "2023-12",
 };
 
 export const DEFAULT_MODELS = [
@@ -177,7 +181,25 @@ export const DEFAULT_MODELS = [
     },
   },
   {
+    name: "gpt-4-turbo-preview",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
     name: "gpt-4-1106-preview",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "gpt-4-0125-preview",
     available: true,
     provider: {
       id: "openai",
@@ -196,6 +218,15 @@ export const DEFAULT_MODELS = [
   },
   {
     name: "gpt-3.5-turbo",
+    available: true,
+    provider: {
+      id: "openai",
+      providerName: "OpenAI",
+      providerType: "openai",
+    },
+  },
+  {
+    name: "gpt-3.5-turbo-0125",
     available: true,
     provider: {
       id: "openai",
