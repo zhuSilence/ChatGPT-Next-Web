@@ -1,5 +1,5 @@
-import type { PartialLocaleType, getClientConfig } from "./index";
-import { QR_CODE, SubmitKey, WX_XIN } from "../store/config";
+import { getClientConfig } from "../config/client";
+import { QR_CODE, SubmitKey, WX_XIN } from "@/app/store";
 
 const isApp = !!getClientConfig()?.isApp;
 
