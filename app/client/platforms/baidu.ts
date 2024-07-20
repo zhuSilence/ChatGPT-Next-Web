@@ -10,6 +10,7 @@ import { getAccessToken } from "@/app/utils/baidu";
 
 import {
   ChatOptions,
+  DrawOptions,
   getHeaders,
   LLMApi,
   LLMModel,
@@ -74,7 +75,9 @@ export class ErnieApi implements LLMApi {
 
     return [baseUrl, path].join("/");
   }
-
+  draw(keyword: string, options: DrawOptions): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
   async chat(options: ChatOptions) {
     const messages = options.messages.map((v) => ({
       role: v.role,

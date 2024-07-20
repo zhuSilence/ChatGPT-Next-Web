@@ -29,6 +29,7 @@ import { useAccessStore } from "./access";
 
 export type ChatMessage = RequestMessage & {
   date: string;
+  content?: string;
   images?: string[];
   image_alt?: string;
   streaming?: boolean;

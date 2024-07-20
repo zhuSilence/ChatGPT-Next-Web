@@ -9,6 +9,7 @@ import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 import {
   ChatOptions,
+  DrawOptions,
   getHeaders,
   LLMApi,
   LLMModel,
@@ -82,7 +83,9 @@ export class QwenApi implements LLMApi {
   extractMessage(res: any) {
     return res?.output?.choices?.at(0)?.message?.content ?? "";
   }
-
+  draw(keyword: string, options: DrawOptions): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
   async chat(options: ChatOptions) {
     const messages = options.messages.map((v) => ({
       role: v.role,

@@ -1,5 +1,11 @@
 import { ACCESS_CODE_PREFIX, Anthropic, ApiPath } from "@/app/constant";
-import { ChatOptions, getHeaders, LLMApi, MultimodalContent } from "../api";
+import {
+  ChatOptions,
+  DrawOptions,
+  getHeaders,
+  LLMApi,
+  MultimodalContent,
+} from "../api";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
@@ -77,6 +83,9 @@ export class ClaudeApi implements LLMApi {
     console.log("[Response] claude response: ", res);
 
     return res?.content?.[0]?.text;
+  }
+  draw(keyword: string, options: DrawOptions): Promise<void> {
+    throw new Error("Method not implemented.");
   }
   async chat(options: ChatOptions): Promise<void> {
     const visionModel = isVisionModel(options.config.model);
