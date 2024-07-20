@@ -50,6 +50,14 @@ export async function auth(req: NextRequest, modelProvider: ModelProvider) {
     };
   }
 
+  if (serverConfig.hideUserApiKey && !!apiKey) {
+    return {
+      error: true,
+      msg: "you are not allowed to access with your own api key",
+    };
+  }
+
+  // if user does not provide an api key, inject system api key
   // 请求 leftChance 接口，获取剩余次
   const response = await fetch(ACCESS_CODE_CHECK.LEFT_CHANCE + accessCode, {
     method: "post",
@@ -58,19 +66,52 @@ export async function auth(req: NextRequest, modelProvider: ModelProvider) {
   });
   const leftChance = await response.json();
   console.log("[Auth] leftChance: ", leftChance);
+
   if (leftChance.data.openApiCount > 0) {
-    // if user does not provide an api key, inject system api key
-    if (!token) {
-      const apiKey = serverConfig.apiKey;
-      if (apiKey) {
-        console.log("[Auth] use system api key");
-        req.headers.set("Authorization", `Bearer ${apiKey}`);
-      } else {
-        console.log("[Auth] admin did not provide an api key");
-      }
-    } else {
-      console.log("[Auth] use user api key");
+    const serverConfig = getServerSideConfig();
+
+    // const systemApiKey =
+    //   modelProvider === ModelProvider.GeminiPro
+    //     ? serverConfig.googleApiKey
+    //     : serverConfig.isAzure
+    //     ? serverConfig.azureApiKey
+    //     : serverConfig.apiKey;
+
+    let systemApiKey: string | undefined;
+
+    switch (modelProvider) {
+      case ModelProvider.GeminiPro:
+        systemApiKey = serverConfig.googleApiKey;
+        break;
+      case ModelProvider.Claude:
+        systemApiKey = serverConfig.anthropicApiKey;
+        break;
+      case ModelProvider.Doubao:
+        systemApiKey = serverConfig.bytedanceApiKey;
+        break;
+      case ModelProvider.Ernie:
+        systemApiKey = serverConfig.baiduApiKey;
+        break;
+      case ModelProvider.Qwen:
+        systemApiKey = serverConfig.alibabaApiKey;
+        break;
+      case ModelProvider.GPT:
+      default:
+        if (req.nextUrl.pathname.includes("azure/deployments")) {
+          systemApiKey = serverConfig.azureApiKey;
+        } else {
+          systemApiKey = serverConfig.apiKey;
+        }
     }
+
+    if (systemApiKey) {
+      console.log("[Auth] use system api key");
+      req.headers.set("Authorization", `Bearer ${systemApiKey}`);
+    } else {
+      console.log("[Auth] admin did not provide an api key");
+    }
+  } else {
+    console.log("[Auth] use user api key");
   }
 
   return {

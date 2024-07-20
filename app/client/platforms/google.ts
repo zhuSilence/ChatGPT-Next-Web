@@ -1,4 +1,4 @@
-import { Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
+import { ApiPath, Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
 import {
   ChatOptions,
   DrawOptions,
@@ -10,10 +10,50 @@ import {
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 import { getClientConfig } from "@/app/config/client";
 import { DEFAULT_API_HOST } from "@/app/constant";
+import Locale from "../../locales";
+import {
+  EventStreamContentType,
+  fetchEventSource,
+} from "@fortaine/fetch-event-source";
+import { prettyObject } from "@/app/utils/format";
+import {
+  getMessageTextContent,
+  getMessageImages,
+  isVisionModel,
+} from "@/app/utils";
+import { preProcessImageContent } from "@/app/utils/chat";
 
 export class GeminiProApi implements LLMApi {
   draw(keyword: string, options: DrawOptions): Promise<void> {
     throw new Error("Method not implemented.");
+  }
+  path(path: string): string {
+    const accessStore = useAccessStore.getState();
+
+    let baseUrl = "";
+    if (accessStore.useCustomConfig) {
+      baseUrl = accessStore.googleUrl;
+    }
+
+    if (baseUrl.length === 0) {
+      const isApp = !!getClientConfig()?.isApp;
+      baseUrl = isApp
+        ? DEFAULT_API_HOST + `/api/proxy/google?key=${accessStore.googleApiKey}`
+        : ApiPath.Google;
+    }
+    if (baseUrl.endsWith("/")) {
+      baseUrl = baseUrl.slice(0, baseUrl.length - 1);
+    }
+    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Google)) {
+      baseUrl = "https://" + baseUrl;
+    }
+
+    console.log("[Proxy Endpoint] ", baseUrl, path);
+
+    let chatPath = [baseUrl, path].join("/");
+
+    chatPath += chatPath.includes("?") ? "&alt=sse" : "?alt=sse";
+    return chatPath;
   }
   extractMessage(res: any) {
     console.log("[Response] gemini-pro response: ", res);
@@ -25,11 +65,40 @@ export class GeminiProApi implements LLMApi {
     );
   }
   async chat(options: ChatOptions): Promise<void> {
-    // const apiClient = this;
-    const messages = options.messages.map((v) => ({
-      role: v.role.replace("assistant", "model").replace("system", "user"),
-      parts: [{ text: v.content }],
-    }));
+    const apiClient = this;
+    let multimodal = false;
+
+    // try get base64image from local cache image_url
+    const _messages: ChatOptions["messages"] = [];
+    for (const v of options.messages) {
+      const content = await preProcessImageContent(v.content);
+      _messages.push({ role: v.role, content });
+    }
+    const messages = _messages.map((v) => {
+      let parts: any[] = [{ text: getMessageTextContent(v) }];
+      if (isVisionModel(options.config.model)) {
+        const images = getMessageImages(v);
+        if (images.length > 0) {
+          multimodal = true;
+          parts = parts.concat(
+            images.map((image) => {
+              const imageType = image.split(";")[0].split(":")[1];
+              const imageData = image.split(",")[1];
+              return {
+                inline_data: {
+                  mime_type: imageType,
+                  data: imageData,
+                },
+              };
+            }),
+          );
+        }
+      }
+      return {
+        role: v.role.replace("assistant", "model").replace("system", "user"),
+        parts: parts,
+      };
+    });
 
     // google requires that role in neighboring messages must not be the same
     for (let i = 0; i < messages.length - 1; ) {
@@ -44,6 +113,11 @@ export class GeminiProApi implements LLMApi {
         i++;
       }
     }
+    // if (visionModel && messages.length > 1) {
+    //   options.onError?.(new Error("Multiturn chat is not enabled for models/gemini-pro-vision"));
+    // }
+
+    const accessStore = useAccessStore.getState();
 
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
@@ -66,44 +140,30 @@ export class GeminiProApi implements LLMApi {
       safetySettings: [
         {
           category: "HARM_CATEGORY_HARASSMENT",
-          threshold: "BLOCK_ONLY_HIGH",
+          threshold: accessStore.googleSafetySettings,
         },
         {
           category: "HARM_CATEGORY_HATE_SPEECH",
-          threshold: "BLOCK_ONLY_HIGH",
+          threshold: accessStore.googleSafetySettings,
         },
         {
           category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-          threshold: "BLOCK_ONLY_HIGH",
+          threshold: accessStore.googleSafetySettings,
         },
         {
           category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-          threshold: "BLOCK_ONLY_HIGH",
+          threshold: accessStore.googleSafetySettings,
         },
       ],
     };
-
-    const accessStore = useAccessStore.getState();
-    let baseUrl = accessStore.googleUrl;
-    const isApp = !!getClientConfig()?.isApp;
 
     let shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
     try {
-      let chatPath = this.path(Google.ChatPath);
+      // https://github.com/google-gemini/cookbook/blob/main/quickstarts/rest/Streaming_REST.ipynb
+      const chatPath = this.path(Google.ChatPath(modelConfig.model));
 
-      // let baseUrl = accessStore.googleUrl;
-
-      if (!baseUrl) {
-        baseUrl = isApp
-          ? DEFAULT_API_HOST + "/api/proxy/google/" + Google.ChatPath
-          : chatPath;
-      }
-
-      if (isApp) {
-        baseUrl += `?key=${accessStore.googleApiKey}`;
-      }
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -116,15 +176,17 @@ export class GeminiProApi implements LLMApi {
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
+
       if (shouldStream) {
         let responseText = "";
         let remainText = "";
         let finished = false;
 
-        let existingTexts: string[] = [];
         const finish = () => {
-          finished = true;
-          options.onFinish(existingTexts.join(""));
+          if (!finished) {
+            finished = true;
+            options.onFinish(responseText + remainText);
+          }
         };
 
         // animate response to make it looks smooth
@@ -149,61 +211,83 @@ export class GeminiProApi implements LLMApi {
         // start animaion
         animateResponseText();
 
-        fetch(
-          baseUrl.replace("generateContent", "streamGenerateContent"),
-          chatPayload,
-        )
-          .then((response) => {
-            const reader = response?.body?.getReader();
-            const decoder = new TextDecoder();
-            let partialData = "";
+        controller.signal.onabort = finish;
 
-            return reader?.read().then(function processText({
-              done,
-              value,
-            }): Promise<any> {
-              if (done) {
-                console.log("Stream complete");
-                // options.onFinish(responseText + remainText);
-                finished = true;
-                return Promise.resolve();
-              }
+        fetchEventSource(chatPath, {
+          ...chatPayload,
+          async onopen(res) {
+            clearTimeout(requestTimeoutId);
+            const contentType = res.headers.get("content-type");
+            console.log(
+              "[Gemini] request response content type: ",
+              contentType,
+            );
 
-              partialData += decoder.decode(value, { stream: true });
+            if (contentType?.startsWith("text/plain")) {
+              responseText = await res.clone().text();
+              return finish();
+            }
 
+            if (
+              !res.ok ||
+              !res.headers
+                .get("content-type")
+                ?.startsWith(EventStreamContentType) ||
+              res.status !== 200
+            ) {
+              const responseTexts = [responseText];
+              let extraInfo = await res.clone().text();
               try {
-                let data = JSON.parse(ensureProperEnding(partialData));
+                const resJson = await res.clone().json();
+                extraInfo = prettyObject(resJson);
+              } catch {}
 
-                const textArray = data.reduce(
-                  (acc: string[], item: { candidates: any[] }) => {
-                    const texts = item.candidates.map((candidate) =>
-                      candidate.content.parts
-                        .map((part: { text: any }) => part.text)
-                        .join(""),
-                    );
-                    return acc.concat(texts);
-                  },
-                  [],
-                );
-
-                if (textArray.length > existingTexts.length) {
-                  const deltaArray = textArray.slice(existingTexts.length);
-                  existingTexts = textArray;
-                  remainText += deltaArray.join("");
-                }
-              } catch (error) {
-                // console.log("[Response Animation] error: ", error,partialData);
-                // skip error message when parsing json
+              if (res.status === 401) {
+                responseTexts.push(Locale.Error.Unauthorized);
               }
 
-              return reader.read().then(processText);
-            });
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
+              if (extraInfo) {
+                responseTexts.push(extraInfo);
+              }
+
+              responseText = responseTexts.join("\n\n");
+
+              return finish();
+            }
+          },
+          onmessage(msg) {
+            if (msg.data === "[DONE]" || finished) {
+              return finish();
+            }
+            const text = msg.data;
+            try {
+              const json = JSON.parse(text);
+              const delta = apiClient.extractMessage(json);
+
+              if (delta) {
+                remainText += delta;
+              }
+
+              const blockReason = json?.promptFeedback?.blockReason;
+              if (blockReason) {
+                // being blocked
+                console.log(`[Google] [Safety Ratings] result:`, blockReason);
+              }
+            } catch (e) {
+              console.error("[Request] parse error", text, msg);
+            }
+          },
+          onclose() {
+            finish();
+          },
+          onerror(e) {
+            options.onError?.(e);
+            throw e;
+          },
+          openWhenHidden: true,
+        });
       } else {
-        const res = await fetch(baseUrl, chatPayload);
+        const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
         const resJson = await res.json();
         if (resJson?.promptFeedback?.blockReason) {
@@ -215,7 +299,7 @@ export class GeminiProApi implements LLMApi {
             ),
           );
         }
-        const message = this.extractMessage(resJson);
+        const message = apiClient.extractMessage(resJson);
         options.onFinish(message);
       }
     } catch (e) {
@@ -229,14 +313,4 @@ export class GeminiProApi implements LLMApi {
   async models(): Promise<LLMModel[]> {
     return [];
   }
-  path(path: string): string {
-    return "/api/google/" + path;
-  }
-}
-
-function ensureProperEnding(str: string) {
-  if (str.startsWith("[") && !str.endsWith("]")) {
-    return str + "]";
-  }
-  return str;
 }

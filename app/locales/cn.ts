@@ -67,6 +67,7 @@ const cn = {
       Masks: "所有面具",
       Clear: "清除聊天",
       Settings: "对话设置",
+      UploadImage: "上传图片",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
@@ -316,21 +317,80 @@ const cn = {
           SubTitle: "选择指定的部分版本",
         },
       },
-      Google: {
+      Anthropic: {
         ApiKey: {
           Title: "接口密钥",
-          SubTitle: "使用自定义 Google AI Studio API Key 绕过密码访问限制",
-          Placeholder: "Google AI Studio API Key",
+          SubTitle: "使用自定义 Anthropic Key 绕过密码访问限制",
+          Placeholder: "Anthropic API Key",
         },
 
         Endpoint: {
           Title: "接口地址",
-          SubTitle: "不包含请求路径，样例：",
+          SubTitle: "样例：",
         },
 
         ApiVerion: {
-          Title: "接口版本 (gemini-pro api version)",
-          SubTitle: "选择指定的部分版本",
+          Title: "接口版本 (claude api version)",
+          SubTitle: "选择一个特定的 API 版本输入",
+        },
+      },
+      Google: {
+        ApiKey: {
+          Title: "API 密钥",
+          SubTitle: "从 Google AI 获取您的 API 密钥",
+          Placeholder: "输入您的 Google AI Studio API 密钥",
+        },
+
+        Endpoint: {
+          Title: "终端地址",
+          SubTitle: "示例：",
+        },
+
+        ApiVersion: {
+          Title: "API 版本（仅适用于 gemini-pro）",
+          SubTitle: "选择一个特定的 API 版本",
+        },
+        GoogleSafetySettings: {
+          Title: "Google 安全过滤级别",
+          SubTitle: "设置内容过滤级别",
+        },
+      },
+      Baidu: {
+        ApiKey: {
+          Title: "API Key",
+          SubTitle: "使用自定义 Baidu API Key",
+          Placeholder: "Baidu API Key",
+        },
+        SecretKey: {
+          Title: "Secret Key",
+          SubTitle: "使用自定义 Baidu Secret Key",
+          Placeholder: "Baidu Secret Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "不支持自定义前往.env配置",
+        },
+      },
+      ByteDance: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义 ByteDance API Key",
+          Placeholder: "ByteDance API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      Alibaba: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义阿里云API Key",
+          Placeholder: "Alibaba Cloud API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
         },
       },
       CustomModel: {

@@ -1,6 +1,7 @@
 import {
   ApiPath,
   DEFAULT_API_HOST,
+  GoogleSafetySettingsThreshold,
   ServiceProvider,
   StoreKey,
 } from "../constant";
@@ -9,14 +10,38 @@ import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import { ensure } from "../utils/clone";
+import { DEFAULT_CONFIG } from "./config";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 let flag = false;
 
-const DEFAULT_OPENAI_URL =
-  getClientConfig()?.buildMode === "export"
-    ? DEFAULT_API_HOST + "/api/proxy/openai"
-    : ApiPath.OpenAI;
+const isApp = getClientConfig()?.buildMode === "export";
+
+const DEFAULT_OPENAI_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/openai"
+  : ApiPath.OpenAI;
+
+const DEFAULT_GOOGLE_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/google"
+  : ApiPath.Google;
+
+const DEFAULT_ANTHROPIC_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/anthropic"
+  : ApiPath.Anthropic;
+
+const DEFAULT_BAIDU_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/baidu"
+  : ApiPath.Baidu;
+
+const DEFAULT_BYTEDANCE_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/bytedance"
+  : ApiPath.ByteDance;
+
+const DEFAULT_ALIBABA_URL = isApp
+  ? DEFAULT_API_HOST + "/api/proxy/alibaba"
+  : ApiPath.Alibaba;
+
+console.log("DEFAULT_ANTHROPIC_URL", DEFAULT_ANTHROPIC_URL);
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "default",
@@ -34,9 +59,28 @@ const DEFAULT_ACCESS_STATE = {
   azureApiVersion: "2023-08-01-preview",
 
   // google ai studio
-  googleUrl: "",
+  googleUrl: DEFAULT_GOOGLE_URL,
   googleApiKey: "",
   googleApiVersion: "v1",
+  googleSafetySettings: GoogleSafetySettingsThreshold.BLOCK_ONLY_HIGH,
+
+  // anthropic
+  anthropicUrl: DEFAULT_ANTHROPIC_URL,
+  anthropicApiKey: "",
+  anthropicApiVersion: "2023-06-01",
+
+  // baidu
+  baiduUrl: DEFAULT_BAIDU_URL,
+  baiduApiKey: "",
+  baiduSecretKey: "",
+
+  // bytedance
+  bytedanceUrl: DEFAULT_BYTEDANCE_URL,
+  bytedanceApiKey: "",
+
+  // alibaba
+  alibabaUrl: DEFAULT_ALIBABA_URL,
+  alibabaApiKey: "",
 
   // server config
   needCode: true,
@@ -45,6 +89,7 @@ const DEFAULT_ACCESS_STATE = {
   disableGPT4: false,
   disableFastLink: false,
   customModels: "",
+  defaultModel: "",
 
   updateToken: function (_: string) {},
   updateCode: function (_: string) {},
@@ -111,6 +156,22 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["googleApiKey"]);
     },
 
+    isValidAnthropic() {
+      return ensure(get(), ["anthropicApiKey"]);
+    },
+
+    isValidBaidu() {
+      return ensure(get(), ["baiduApiKey", "baiduSecretKey"]);
+    },
+
+    isValidByteDance() {
+      return ensure(get(), ["bytedanceApiKey"]);
+    },
+
+    isValidAlibaba() {
+      return ensure(get(), ["alibabaApiKey"]);
+    },
+
     isAuthorized() {
       get().fetch();
       return flag || !!get().accessCode;
@@ -129,6 +190,13 @@ export const useAccessStore = createPersistStore(
         },
       })
         .then((res) => res.json())
+        .then((res) => {
+          // Set default model from env request
+          let defaultModel = res.defaultModel ?? "";
+          DEFAULT_CONFIG.modelConfig.model =
+            defaultModel !== "" ? defaultModel : "gpt-3.5-turbo";
+          return res;
+        })
         .then((res: DangerConfig) => {
           console.log("[Config] got config from server", res);
           set(() => ({ ...res }));
