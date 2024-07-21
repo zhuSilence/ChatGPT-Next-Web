@@ -801,7 +801,7 @@ function _Chat() {
     }
     setIsLoading(true);
     chatStore
-      .onUserInput(userInput, accessStore)
+      .onUserInput(userInput, accessStore, attachImages)
       .then(() => setIsLoading(false));
     setAttachImages([]);
     localStorage.setItem(LAST_INPUT_KEY, userInput);
@@ -881,12 +881,13 @@ function _Chat() {
   };
   const onRightClick = (e: any, message: ChatMessage) => {
     // copy to clipboard
-    // if (selectOrCopy(e.currentTarget, message.content)) {
-    //   if (userInput.length === 0) {
-    //     setUserInput(message.content);
-    //   }
-    // e.preventDefault();
-    // }
+    if (selectOrCopy(e.currentTarget, getMessageTextContent(message))) {
+      if (userInput.length === 0) {
+        setUserInput(getMessageTextContent(message));
+      }
+
+      e.preventDefault();
+    }
   };
 
   const deleteMessage = (msgId?: string) => {

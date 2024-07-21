@@ -37,7 +37,6 @@ import {
   getMessageImages,
   isVisionModel,
 } from "@/app/utils";
-import { makeAzurePath } from "@/app/azure";
 import { requestOpenaiClient } from "@/app/requests";
 
 const TIME_OUT_MS = 60000;

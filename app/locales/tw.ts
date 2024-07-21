@@ -1,5 +1,5 @@
 import { getClientConfig } from "../config/client";
-import { QR_CODE, SubmitKey, WX_XIN } from "@/app/store";
+import { QR_CODE, SubmitKey, WX_XIN } from "../store/config";
 
 const isApp = !!getClientConfig()?.isApp;
 

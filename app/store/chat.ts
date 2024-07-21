@@ -1,4 +1,4 @@
-import { ControllerPool, trimTopic, getMessageTextContent } from "../utils";
+import { trimTopic, getMessageTextContent } from "../utils";
 
 import Locale, { getLang } from "../locales";
 import { showToast } from "../components/ui-lib";
@@ -29,7 +29,6 @@ import { useAccessStore } from "./access";
 
 export type ChatMessage = RequestMessage & {
   date: string;
-  content?: string;
   images?: string[];
   image_alt?: string;
   streaming?: boolean;
@@ -383,122 +382,64 @@ export const useChatStore = createPersistStore(
         console.log("[User Input] ", sendMessages);
         const leftResult = await accessStore.leftChance();
         if (leftResult) {
-          //判断出否是请求图片
-          if (
-            userMessage.content
-              .trim()
-              .toLowerCase()
-              .startsWith(imageModelConfig.command.toLowerCase())
-          ) {
-            const keyword = userMessage.content.substring(
-              imageModelConfig.command.toLowerCase().length,
-            );
-            console.log("keyword", keyword);
-            await api.llm.draw(keyword, {
-              onMessage(content, images, image_alt, done) {
-                // stream response
-                if (done) {
-                  accessStore.reduce();
-                  botMessage.streaming = false;
-                  botMessage.content = content!;
-                  botMessage.images = images!;
-                  botMessage.image_alt = image_alt!;
-                  get().onNewMessage(botMessage);
-                  ControllerPool.remove(
-                    session.id,
-                    botMessage.id ?? messageIndex,
-                  );
-                } else {
-                  botMessage.image_alt = image_alt!;
-                  set(() => ({}));
-                }
-              },
-              onError(error, statusCode) {
-                const isAborted = error.message.includes("aborted");
-                if (statusCode === 401) {
-                  botMessage.content = Locale.Error.Unauthorized;
-                } else if (!isAborted) {
-                  botMessage.content += "\n\n" + Locale.Store.Error;
-                }
-                botMessage.streaming = false;
-                userMessage.isError = !isAborted;
-                botMessage.isError = !isAborted;
-
-                set(() => ({}));
-                ControllerPool.remove(
-                  session.id,
-                  botMessage.id ?? messageIndex,
-                );
-              },
-              onController(controller) {
-                // collect controller for stop/retry
-                ControllerPool.addController(
-                  session.id,
-                  botMessage.id ?? messageIndex,
-                  controller,
-                );
-              },
-            });
-          } else {
-            await api.llm.chat({
-              messages: sendMessages,
-              config: { ...modelConfig, stream: true },
-              onUpdate(message) {
-                botMessage.streaming = true;
-                if (message) {
-                  botMessage.content = message;
-                }
-                get().updateCurrentSession((session) => {
-                  session.messages = session.messages.concat();
+          await api.llm.chat({
+            messages: sendMessages,
+            config: { ...modelConfig, stream: true },
+            onUpdate(message) {
+              botMessage.streaming = true;
+              if (message) {
+                botMessage.content = message;
+              }
+              get().updateCurrentSession((session) => {
+                session.messages = session.messages.concat();
+              });
+            },
+            onFinish(message) {
+              accessStore.reduce();
+              botMessage.streaming = false;
+              if (message) {
+                botMessage.content = message;
+                get().onNewMessage(botMessage);
+              }
+              ChatControllerPool.remove(session.id, botMessage.id);
+            },
+            onError(error) {
+              const isAborted = error.message.includes("aborted");
+              botMessage.content +=
+                "\n\n" +
+                prettyObject({
+                  error: true,
+                  message: error.message,
                 });
-              },
-              onFinish(message) {
-                accessStore.reduce();
-                botMessage.streaming = false;
-                if (message) {
-                  botMessage.content = message;
-                  get().onNewMessage(botMessage);
-                }
-                ChatControllerPool.remove(session.id, botMessage.id);
-              },
-              onError(error) {
-                const isAborted = error.message.includes("aborted");
-                botMessage.content +=
-                  "\n\n" +
-                  prettyObject({
-                    error: true,
-                    message: error.message,
-                  });
-                botMessage.streaming = false;
-                userMessage.isError = !isAborted;
-                botMessage.isError = !isAborted;
-                get().updateCurrentSession((session) => {
-                  session.messages = session.messages.concat();
-                });
-                ChatControllerPool.remove(
-                  session.id,
-                  botMessage.id ?? messageIndex,
-                );
+              botMessage.streaming = false;
+              userMessage.isError = !isAborted;
+              botMessage.isError = !isAborted;
+              get().updateCurrentSession((session) => {
+                session.messages = session.messages.concat();
+              });
+              ChatControllerPool.remove(
+                session.id,
+                botMessage.id ?? messageIndex,
+              );
 
-                console.error("[Chat] failed ", error);
-              },
-              onController(controller) {
-                // collect controller for stop/retry
-                ChatControllerPool.addController(
-                  session.id,
-                  botMessage.id ?? messageIndex,
-                  controller,
-                );
-              },
-            });
-          }
+              console.error("[Chat] failed ", error);
+            },
+            onController(controller) {
+              // collect controller for stop/retry
+              ChatControllerPool.addController(
+                session.id,
+                botMessage.id ?? messageIndex,
+                controller,
+              );
+            },
+          });
         } else {
           botMessage.content = Locale.Error.Unauthorized;
           botMessage.streaming = false;
           userMessage.isError = true;
           botMessage.isError = true;
           set(() => ({}));
-          ControllerPool.remove(session.id, botMessage.id ?? messageIndex);
+          ChatControllerPool.remove(session.id, botMessage.id ?? messageIndex);
         }
       },
 

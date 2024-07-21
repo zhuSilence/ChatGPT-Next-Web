@@ -883,6 +883,7 @@ export function Settings() {
             />
           </ListItem>
         </List>
+
         <List id={SlotID.CustomModel}>
           {showAccessCode && (
             <ListItem
@@ -1396,6 +1397,7 @@ export function Settings() {
             ></input>
           </ListItem>
         </List>
+
         <List>
           <ModelConfigList
             modelConfig={config.modelConfig}

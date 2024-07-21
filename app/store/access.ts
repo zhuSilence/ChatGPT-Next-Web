@@ -45,7 +45,7 @@ console.log("DEFAULT_ANTHROPIC_URL", DEFAULT_ANTHROPIC_URL);
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "default",
-  useCustomConfig: true,
+  useCustomConfig: false,
 
   provider: ServiceProvider.OpenAI,
 
@@ -84,7 +84,7 @@ const DEFAULT_ACCESS_STATE = {
 
   // server config
   needCode: true,
-  hideUserApiKey: true,
+  hideUserApiKey: false,
   hideBalanceQuery: false,
   disableGPT4: false,
   disableFastLink: false,
