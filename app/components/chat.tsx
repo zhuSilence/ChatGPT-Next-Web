@@ -1233,7 +1233,6 @@ function _Chat() {
     });
   };
 
-  const accessStore = useAccessStore();
   const [speechStatus, setSpeechStatus] = useState(false);
   const [speechLoading, setSpeechLoading] = useState(false);
   async function openaiSpeech(text: string) {
