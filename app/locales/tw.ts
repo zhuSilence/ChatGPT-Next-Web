@@ -1,6 +1,7 @@
 import { getClientConfig } from "../config/client";
 import { QR_CODE, SubmitKey, WX_XIN } from "../store/config";
 
+import { SAAS_CHAT_UTM_URL } from "@/app/constant";
 const isApp = !!getClientConfig()?.isApp;
 
 const tw = {
@@ -19,6 +20,10 @@ const tw = {
     Input: "在此處填寫存取密碼",
     Confirm: "確認",
     Later: "稍候再說",
+    Return: "返回",
+    SaasTips: "設定太麻煩，想要立即使用",
+    TopTips:
+      "🥳 NextChat AI 首發優惠，立刻解鎖 OpenAI o1, GPT-4o, Claude-3.5 等最新的大型語言模型",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 則對話`,
@@ -44,6 +49,8 @@ const tw = {
       PinToastAction: "檢視",
       Delete: "刪除",
       Edit: "編輯",
+      RefreshTitle: "重新整理標題",
+      RefreshToast: "已傳送重新整理標題請求",
     },
     Commands: {
       new: "新建聊天",
@@ -82,6 +89,14 @@ const tw = {
       SaveAs: "另存新檔",
     },
     IsContext: "預設提示詞",
+    ShortcutKey: {
+      Title: "鍵盤快捷方式",
+      newChat: "開啟新聊天",
+      focusInput: "聚焦輸入框",
+      copyLastMessage: "複製最後一個回覆",
+      copyLastCode: "複製最後一個程式碼區塊",
+      showShortcutKey: "顯示快捷方式",
+    },
   },
   Export: {
     Title: "將聊天記錄匯出為 Markdown",
@@ -153,6 +168,11 @@ const tw = {
     FontSize: {
       Title: "字型大小",
       SubTitle: "聊天內容的字型大小",
+    },
+    FontFamily: {
+      Title: "聊天字型",
+      SubTitle: "聊天內容的字型，若留空則套用全域預設字型",
+      Placeholder: "字型名稱",
     },
     InjectSystemPrompts: {
       Title: "匯入系統提示",
@@ -273,6 +293,14 @@ const tw = {
     },
 
     Access: {
+      SaasStart: {
+        Title: "使用 NextChat AI",
+        Label: "(性價比最高的方案)",
+        SubTitle:
+          "由 NextChat 官方維護，無須設定開箱即用，支援 OpenAI o1、GPT-4o、Claude-3.5 等最新的大型語言模型",
+        ChatNow: "立刻開始對話",
+      },
+
       AccessCode: {
         Title: "存取密碼",
         SubTitle: "管理員已開啟加密存取",
@@ -356,6 +384,10 @@ const tw = {
     },
 
     Model: "模型 (model)",
+    CompressModel: {
+      Title: "壓縮模型",
+      SubTitle: "用於壓縮歷史記錄的模型",
+    },
     ImageModel: {
       Title: "圖片模型",
       Model: "DALL-E模型",
@@ -457,6 +489,21 @@ const tw = {
         SubTitle: "產生此角色範本的直達連結",
         Action: "複製連結",
       },
+    },
+  },
+  SearchChat: {
+    Name: "搜尋",
+    Page: {
+      Title: "搜尋聊天記錄",
+      Search: "輸入搜尋關鍵詞",
+      NoResult: "沒有找到結果",
+      NoData: "沒有資料",
+      Loading: "載入中",
+
+      SubTitle: (count: number) => `找到 ${count} 條結果`,
+    },
+    Item: {
+      View: "檢視",
     },
   },
   NewChat: {

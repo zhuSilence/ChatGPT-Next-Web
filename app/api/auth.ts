@@ -80,6 +80,9 @@ export async function auth(req: NextRequest, modelProvider: ModelProvider) {
     let systemApiKey: string | undefined;
 
     switch (modelProvider) {
+      case ModelProvider.Stability:
+        systemApiKey = serverConfig.stabilityApiKey;
+        break;
       case ModelProvider.GeminiPro:
         systemApiKey = serverConfig.googleApiKey;
         break;
@@ -94,6 +97,19 @@ export async function auth(req: NextRequest, modelProvider: ModelProvider) {
         break;
       case ModelProvider.Qwen:
         systemApiKey = serverConfig.alibabaApiKey;
+        break;
+      case ModelProvider.Moonshot:
+        systemApiKey = serverConfig.moonshotApiKey;
+        break;
+      case ModelProvider.Iflytek:
+        systemApiKey =
+          serverConfig.iflytekApiKey + ":" + serverConfig.iflytekApiSecret;
+        break;
+      case ModelProvider.XAI:
+        systemApiKey = serverConfig.xaiApiKey;
+        break;
+      case ModelProvider.ChatGLM:
+        systemApiKey = serverConfig.chatglmApiKey;
         break;
       case ModelProvider.GPT:
       default:
