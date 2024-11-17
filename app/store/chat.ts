@@ -435,7 +435,7 @@ export const useChatStore = createPersistStore(
               if (message) {
                 botMessage.content = message;
               }
-              get().updateCurrentSession((session) => {
+              get().updateTargetSession(session, (session) => {
                 session.messages = session.messages.concat();
               });
             },
@@ -444,12 +444,29 @@ export const useChatStore = createPersistStore(
               botMessage.streaming = false;
               if (message) {
                 botMessage.content = message;
-                get().onNewMessage(botMessage);
+                botMessage.date = new Date().toLocaleString();
+                get().onNewMessage(botMessage, session);
               }
               ChatControllerPool.remove(session.id, botMessage.id);
             },
+            onBeforeTool(tool: ChatMessageTool) {
+              (botMessage.tools = botMessage?.tools || []).push(tool);
+              get().updateTargetSession(session, (session) => {
+                session.messages = session.messages.concat();
+              });
+            },
+            onAfterTool(tool: ChatMessageTool) {
+              botMessage?.tools?.forEach((t, i, tools) => {
+                if (tool.id == t.id) {
+                  tools[i] = { ...tool };
+                }
+              });
+              get().updateTargetSession(session, (session) => {
+                session.messages = session.messages.concat();
+              });
+            },
             onError(error) {
-              const isAborted = error.message.includes("aborted");
+              const isAborted = error.message?.includes?.("aborted");
               botMessage.content +=
                 "\n\n" +
                 prettyObject({
@@ -459,7 +476,7 @@ export const useChatStore = createPersistStore(
               botMessage.streaming = false;
               userMessage.isError = !isAborted;
               botMessage.isError = !isAborted;
-              get().updateCurrentSession((session) => {
+              get().updateTargetSession(session, (session) => {
                 session.messages = session.messages.concat();
               });
               ChatControllerPool.remove(
