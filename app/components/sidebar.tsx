@@ -136,7 +136,6 @@ export function SideBarContainer(props: {
   shouldNarrow: boolean;
   className?: string;
 }) {
-  const accessStore = useAccessStore();
   const isMobileScreen = useMobileScreen();
   const isIOSMobile = useMemo(
     () => isIOS() && isMobileScreen,
@@ -226,7 +225,7 @@ export function SideBar(props: { className?: string }) {
   const navigate = useNavigate();
   const config = useAppConfig();
   const chatStore = useChatStore();
-
+  const accessStore = useAccessStore();
   return (
     <SideBarContainer
       onDragStart={onDragStart}
