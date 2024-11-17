@@ -1216,7 +1216,9 @@ function _Chat() {
     setIsLoading(true);
     const textContent = getMessageTextContent(userMessage);
     const images = getMessageImages(userMessage);
-    chatStore.onUserInput(textContent, images).then(() => setIsLoading(false));
+    chatStore
+      .onUserInput(textContent, accessStore, images)
+      .then(() => setIsLoading(false));
     inputRef.current?.focus();
   };
 
